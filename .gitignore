@@ -5,7 +5,9 @@
 .metadata/
 
 #vscode
-.vscode/
+.vscode/*
+!.vscode/launch.json
+
 
 #Cmake
 CMakeFiles/

@@ -30,7 +30,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+  #include "superloop.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -117,12 +117,17 @@ int main(void)
   MX_ICACHE_Init();
   /* USER CODE BEGIN 2 */
 
+  /* User Superloop Init - Should be last function call before while loop. */
+  superloop_init();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    /* User Superloop Code - Should be only function call in while loop. */
+    superloop_run();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

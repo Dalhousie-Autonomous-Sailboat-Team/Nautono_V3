@@ -4,7 +4,7 @@
  * style guide.
  *
  * @par
- * COPYRIGHT NOTICE: (c) 2024 DalMAST.  All rights reserved.
+ * COPYRIGHT NOTICE: (c) 2025 DalMAST.  All rights reserved.
  */
 
 #ifndef MODULE_H

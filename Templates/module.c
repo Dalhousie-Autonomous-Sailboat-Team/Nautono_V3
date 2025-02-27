@@ -3,7 +3,7 @@
  * @brief A description of the module’s purpose.
  *
  * @par
- * COPYRIGHT NOTICE: (c) 2024 DalMAST. All rights reserved.
+ * COPYRIGHT NOTICE: (c) 2025 DalMAST. All rights reserved.
  */
 
 #include "module.h"
