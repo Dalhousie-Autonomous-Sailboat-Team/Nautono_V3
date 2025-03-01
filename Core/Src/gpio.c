@@ -54,17 +54,17 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, HSE_ENABLE_Pin|GPIO4_Pin|GPIO5_Pin|GPIO6_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, HSE_ENABLE_Pin|GPIO4_Pin|RS422_nRE_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, DEBUG_LED1_Pin|DEBUG_LED2_Pin|GPIO1_Pin|GPIO2_Pin
                           |GPIO3_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, GPIO7_Pin|GPIO8_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOD, WINDVANE_EN_Pin|BEACON_EN_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : HSE_ENABLE_Pin GPIO4_Pin GPIO5_Pin GPIO6_Pin */
-  GPIO_InitStruct.Pin = HSE_ENABLE_Pin|GPIO4_Pin|GPIO5_Pin|GPIO6_Pin;
+  /*Configure GPIO pins : HSE_ENABLE_Pin GPIO4_Pin RS422_nRE_Pin */
+  GPIO_InitStruct.Pin = HSE_ENABLE_Pin|GPIO4_Pin|RS422_nRE_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -79,8 +79,8 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : GPIO7_Pin GPIO8_Pin */
-  GPIO_InitStruct.Pin = GPIO7_Pin|GPIO8_Pin;
+  /*Configure GPIO pins : WINDVANE_EN_Pin BEACON_EN_Pin */
+  GPIO_InitStruct.Pin = WINDVANE_EN_Pin|BEACON_EN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
