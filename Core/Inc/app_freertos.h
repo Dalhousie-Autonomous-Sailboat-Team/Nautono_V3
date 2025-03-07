@@ -55,8 +55,8 @@ extern "C" {
 
 /* USER CODE END EM */
 extern osThreadId_t defaultTaskHandle;
-extern osThreadId_t blink_1Handle;
-extern osThreadId_t blink_2Handle;
+extern osTimerId_t Debug_Blink_OnHandle;
+extern osTimerId_t Debug_Blink_OffHandle;
 
 /* Exported function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -64,8 +64,8 @@ extern osThreadId_t blink_2Handle;
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
-void StartBlink1(void *argument);
-void StartBlink2(void *argument);
+void Set_LED(void *argument);
+void Clear_LED(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
