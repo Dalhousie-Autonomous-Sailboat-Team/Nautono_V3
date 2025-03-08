@@ -52,6 +52,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     User/Src/ring_buffer.c
     User/Src/debug.c
     User/Src/sleep.c
+    User/Src/sensor.c
 
 )
 

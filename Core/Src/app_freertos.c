@@ -52,6 +52,13 @@ const osThreadAttr_t defaultTask_attributes = {
   .priority = (osPriority_t) osPriorityNormal,
   .stack_size = 128 * 4
 };
+/* Definitions for Measure_Power */
+osThreadId_t Measure_PowerHandle;
+const osThreadAttr_t Measure_Power_attributes = {
+  .name = "Measure_Power",
+  .priority = (osPriority_t) osPriorityNormal,
+  .stack_size = 128 * 4
+};
 /* Definitions for Debug_Blink_On */
 osTimerId_t Debug_Blink_OnHandle;
 const osTimerAttr_t Debug_Blink_On_attributes = {
@@ -113,6 +120,9 @@ void MX_FREERTOS_Init(void) {
   /* creation of defaultTask */
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
+  /* creation of Measure_Power */
+  Measure_PowerHandle = osThreadNew(MeasurePower, NULL, &Measure_Power_attributes);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -138,6 +148,24 @@ __weak void StartDefaultTask(void *argument)
     osDelay(1);
   }
   /* USER CODE END defaultTask */
+}
+
+/* USER CODE BEGIN Header_MeasurePower */
+/**
+* @brief Function implementing the Measure_Power thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_MeasurePower */
+__weak void MeasurePower(void *argument)
+{
+  /* USER CODE BEGIN Measure_Power */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END Measure_Power */
 }
 
 /* Set_LED function */

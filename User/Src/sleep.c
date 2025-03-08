@@ -1,4 +1,4 @@
-/** @file debug.c
+/** @file sleep.c
  *
  * @brief Pre/Post Sleep processing.
  *
