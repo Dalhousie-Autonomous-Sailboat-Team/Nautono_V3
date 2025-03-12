@@ -53,6 +53,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     User/Src/debug.c
     User/Src/sleep.c
     User/Src/sensor.c
+    User/Src/serial_config.c
 
 )
 

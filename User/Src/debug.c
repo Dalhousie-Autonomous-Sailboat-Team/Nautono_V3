@@ -18,6 +18,12 @@
 
 extern osTimerId_t Debug_Blink_OnHandle;
 extern osTimerId_t Debug_Blink_OffHandle;
+extern UART_HandleTypeDef huart4;
+
+uint8_t RxBuffer[255];
+uint16_t debug_receive_size = 0;
+
+volatile uint8_t debug_RxDone = 0;
 
 /* Task Overwrites */
 
@@ -33,7 +39,7 @@ void StartDefaultTask(void *argument)
 
     /* Infinite loop */
     vTaskSuspend(NULL);
-    (void)argument;
+    UNUSED(argument);
 }
 
 /* Timer Overwrites */
@@ -48,7 +54,7 @@ void Set_LED(void *argument)
     HAL_GPIO_WritePin(DEBUG_LED1_GPIO_Port, DEBUG_LED1_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(GPIO1_GPIO_Port, GPIO1_Pin, GPIO_PIN_SET);
     osTimerStart(Debug_Blink_OffHandle, LED_FLASH_TIME);
-    (void)argument;
+    UNUSED(argument);
 }
 
 /**
@@ -60,5 +66,18 @@ void Clear_LED(void *argument)
 {
     HAL_GPIO_WritePin(DEBUG_LED1_GPIO_Port, DEBUG_LED1_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(GPIO1_GPIO_Port, GPIO1_Pin, GPIO_PIN_RESET);
-    (void)argument;
+    UNUSED(argument);
+}
+
+/**
+* @brief Function implementing the DebugReceive thread.
+* @param argument: Not used
+* @retval None
+*/
+__weak void DebugReceive(void *argument)
+{
+    HAL_UARTEx_ReceiveToIdle_DMA(&huart4, RxBuffer, 255);
+  /* Infinite loop */
+  vTaskSuspend(NULL);
+  UNUSED(argument);
 }

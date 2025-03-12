@@ -56,6 +56,7 @@ extern "C" {
 /* USER CODE END EM */
 extern osThreadId_t defaultTaskHandle;
 extern osThreadId_t Measure_PowerHandle;
+extern osThreadId_t DebugReceiveHandle;
 extern osTimerId_t Debug_Blink_OnHandle;
 extern osTimerId_t Debug_Blink_OffHandle;
 
@@ -66,6 +67,7 @@ extern osTimerId_t Debug_Blink_OffHandle;
 
 void StartDefaultTask(void *argument);
 void MeasurePower(void *argument);
+void DebugReceive(void *argument);
 void Set_LED(void *argument);
 void Clear_LED(void *argument);
 

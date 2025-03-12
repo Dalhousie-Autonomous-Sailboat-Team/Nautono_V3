@@ -15,14 +15,12 @@
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_MeasurePower */
 __weak void MeasurePower(void *argument)
 {
-  /* USER CODE BEGIN Measure_Power */
   /* Infinite loop */
   for(;;)
   {
     osDelay(1);
   }
-  /* USER CODE END Measure_Power */
+  (void)argument;
 }

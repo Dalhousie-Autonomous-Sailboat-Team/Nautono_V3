@@ -59,6 +59,13 @@ const osThreadAttr_t Measure_Power_attributes = {
   .priority = (osPriority_t) osPriorityNormal,
   .stack_size = 128 * 4
 };
+/* Definitions for DebugReceive */
+osThreadId_t DebugReceiveHandle;
+const osThreadAttr_t DebugReceive_attributes = {
+  .name = "DebugReceive",
+  .priority = (osPriority_t) osPriorityNormal,
+  .stack_size = 128 * 4
+};
 /* Definitions for Debug_Blink_On */
 osTimerId_t Debug_Blink_OnHandle;
 const osTimerAttr_t Debug_Blink_On_attributes = {
@@ -123,6 +130,9 @@ void MX_FREERTOS_Init(void) {
   /* creation of Measure_Power */
   Measure_PowerHandle = osThreadNew(MeasurePower, NULL, &Measure_Power_attributes);
 
+  /* creation of DebugReceive */
+  DebugReceiveHandle = osThreadNew(DebugReceive, NULL, &DebugReceive_attributes);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -166,6 +176,24 @@ __weak void MeasurePower(void *argument)
     osDelay(1);
   }
   /* USER CODE END Measure_Power */
+}
+
+/* USER CODE BEGIN Header_DebugReceive */
+/**
+* @brief Function implementing the DebugReceive thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_DebugReceive */
+__weak void DebugReceive(void *argument)
+{
+  /* USER CODE BEGIN DebugReceive */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END DebugReceive */
 }
 
 /* Set_LED function */
