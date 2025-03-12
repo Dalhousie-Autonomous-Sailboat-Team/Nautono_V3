@@ -59,12 +59,12 @@ const osThreadAttr_t Measure_Power_attributes = {
   .priority = (osPriority_t) osPriorityNormal,
   .stack_size = 128 * 4
 };
-/* Definitions for DebugReceive */
-osThreadId_t DebugReceiveHandle;
-const osThreadAttr_t DebugReceive_attributes = {
-  .name = "DebugReceive",
+/* Definitions for DebugUART */
+osThreadId_t DebugUARTHandle;
+const osThreadAttr_t DebugUART_attributes = {
+  .name = "DebugUART",
   .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 128 * 4
+  .stack_size = 256 * 4
 };
 /* Definitions for Debug_Blink_On */
 osTimerId_t Debug_Blink_OnHandle;
@@ -75,6 +75,11 @@ const osTimerAttr_t Debug_Blink_On_attributes = {
 osTimerId_t Debug_Blink_OffHandle;
 const osTimerAttr_t Debug_Blink_Off_attributes = {
   .name = "Debug_Blink_Off"
+};
+/* Definitions for PrintMessageQueue */
+osMessageQueueId_t PrintMessageQueueHandle;
+const osMessageQueueAttr_t PrintMessageQueue_attributes = {
+  .name = "PrintMessageQueue"
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -120,6 +125,8 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
+  /* creation of PrintMessageQueue */
+  PrintMessageQueueHandle = osMessageQueueNew (16, sizeof(DebugMessage_t), &PrintMessageQueue_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -130,8 +137,8 @@ void MX_FREERTOS_Init(void) {
   /* creation of Measure_Power */
   Measure_PowerHandle = osThreadNew(MeasurePower, NULL, &Measure_Power_attributes);
 
-  /* creation of DebugReceive */
-  DebugReceiveHandle = osThreadNew(DebugReceive, NULL, &DebugReceive_attributes);
+  /* creation of DebugUART */
+  DebugUARTHandle = osThreadNew(DebugUART, NULL, &DebugUART_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -178,22 +185,22 @@ __weak void MeasurePower(void *argument)
   /* USER CODE END Measure_Power */
 }
 
-/* USER CODE BEGIN Header_DebugReceive */
+/* USER CODE BEGIN Header_DebugUART */
 /**
-* @brief Function implementing the DebugReceive thread.
+* @brief Function implementing the DebugUART thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_DebugReceive */
-__weak void DebugReceive(void *argument)
+/* USER CODE END Header_DebugUART */
+__weak void DebugUART(void *argument)
 {
-  /* USER CODE BEGIN DebugReceive */
+  /* USER CODE BEGIN DebugUART */
   /* Infinite loop */
   for(;;)
   {
     osDelay(1);
   }
-  /* USER CODE END DebugReceive */
+  /* USER CODE END DebugUART */
 }
 
 /* Set_LED function */

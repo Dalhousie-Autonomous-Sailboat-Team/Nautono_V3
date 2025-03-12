@@ -22,6 +22,7 @@
 #include "stm32h5xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "assert.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,6 +57,8 @@
 
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef handle_GPDMA1_Channel1;
+extern DMA_HandleTypeDef handle_GPDMA1_Channel0;
+extern UART_HandleTypeDef huart4;
 extern TIM_HandleTypeDef htim6;
 
 /* USER CODE BEGIN EV */
@@ -86,7 +89,7 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
-
+  ASSERT(0, "Hard Fault");
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {
@@ -161,6 +164,20 @@ void DebugMon_Handler(void)
 /******************************************************************************/
 
 /**
+  * @brief This function handles GPDMA1 Channel 0 global interrupt.
+  */
+void GPDMA1_Channel0_IRQHandler(void)
+{
+  /* USER CODE BEGIN GPDMA1_Channel0_IRQn 0 */
+
+  /* USER CODE END GPDMA1_Channel0_IRQn 0 */
+  HAL_DMA_IRQHandler(&handle_GPDMA1_Channel0);
+  /* USER CODE BEGIN GPDMA1_Channel0_IRQn 1 */
+
+  /* USER CODE END GPDMA1_Channel0_IRQn 1 */
+}
+
+/**
   * @brief This function handles GPDMA1 Channel 1 global interrupt.
   */
 void GPDMA1_Channel1_IRQHandler(void)
@@ -186,6 +203,20 @@ void TIM6_IRQHandler(void)
   /* USER CODE BEGIN TIM6_IRQn 1 */
 
   /* USER CODE END TIM6_IRQn 1 */
+}
+
+/**
+  * @brief This function handles UART4 global interrupt.
+  */
+void UART4_IRQHandler(void)
+{
+  /* USER CODE BEGIN UART4_IRQn 0 */
+
+  /* USER CODE END UART4_IRQn 0 */
+  HAL_UART_IRQHandler(&huart4);
+  /* USER CODE BEGIN UART4_IRQn 1 */
+
+  /* USER CODE END UART4_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

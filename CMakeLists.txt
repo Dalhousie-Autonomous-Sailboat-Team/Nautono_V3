@@ -48,12 +48,11 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
-    User/Src/assert.c
-    User/Src/ring_buffer.c
     User/Src/debug.c
     User/Src/sleep.c
     User/Src/sensor.c
     User/Src/serial_config.c
+    User/Src/assert.c
 
 )
 

@@ -18,9 +18,6 @@
 __weak void MeasurePower(void *argument)
 {
   /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  (void)argument;
+  osThreadSuspend(osThreadGetId());
+  UNUSED(argument);
 }
