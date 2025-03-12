@@ -40,8 +40,10 @@ volatile uint8_t uart4_tx_busy = false;
 */
 void StartDefaultTask(void *argument)
 {
-    /* Start Debug Timer */
+  #ifdef ENABLE_DEBUG_HEARTBEAT
+    /* Start Debug Heartbeat Timer */
     osTimerStart(Debug_Blink_OnHandle, LED_FLASH_PERIOD);
+  #endif
 
     /* Infinite loop */
     vTaskSuspend(NULL);

@@ -10,6 +10,7 @@
 #define DEBUG_H
 
 #define ENABLE_DEBUG_PRINT_STATEMENTS
+#define ENABLE_DEBUG_HEARTBEAT
 
 #include <stdint.h>
 #include <stdbool.h>

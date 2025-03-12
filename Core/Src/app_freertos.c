@@ -91,11 +91,13 @@ const osMessageQueueAttr_t PrintMessageQueue_attributes = {
 __weak void PreSleepProcessing(uint32_t ulExpectedIdleTime)
 {
 /* place for user code */
+UNUSED(ulExpectedIdleTime);
 }
 
 __weak void PostSleepProcessing(uint32_t ulExpectedIdleTime)
 {
 /* place for user code */
+UNUSED(ulExpectedIdleTime);
 }
 /* USER CODE END PREPOSTSLEEP */
 
@@ -159,6 +161,7 @@ void MX_FREERTOS_Init(void) {
 __weak void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN defaultTask */
+  UNUSED(argument);
   /* Infinite loop */
   for(;;)
   {
@@ -177,6 +180,7 @@ __weak void StartDefaultTask(void *argument)
 __weak void MeasurePower(void *argument)
 {
   /* USER CODE BEGIN Measure_Power */
+  UNUSED(argument);
   /* Infinite loop */
   for(;;)
   {
@@ -195,6 +199,7 @@ __weak void MeasurePower(void *argument)
 __weak void DebugUART(void *argument)
 {
   /* USER CODE BEGIN DebugUART */
+  UNUSED(argument);
   /* Infinite loop */
   for(;;)
   {
@@ -207,7 +212,7 @@ __weak void DebugUART(void *argument)
 __weak void Set_LED(void *argument)
 {
   /* USER CODE BEGIN Set_LED */
-
+  UNUSED(argument);
   /* USER CODE END Set_LED */
 }
 
@@ -215,7 +220,7 @@ __weak void Set_LED(void *argument)
 __weak void Clear_LED(void *argument)
 {
   /* USER CODE BEGIN Clear_LED */
-
+  UNUSED(argument);
   /* USER CODE END Clear_LED */
 }
 
