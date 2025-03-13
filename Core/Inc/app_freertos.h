@@ -60,6 +60,7 @@ extern osThreadId_t DebugUARTHandle;
 extern osTimerId_t Debug_Blink_OnHandle;
 extern osTimerId_t Debug_Blink_OffHandle;
 extern osMessageQueueId_t PrintMessageQueueHandle;
+extern osEventFlagsId_t I2C1_EventHandle;
 
 /* Exported function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */

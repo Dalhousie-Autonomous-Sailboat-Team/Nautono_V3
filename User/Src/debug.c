@@ -59,8 +59,6 @@ void StartDefaultTask(void *argument)
  */
 void Set_LED(void *argument)
 {
-    DEBUG_PRINT("Set_LED\n");
-    DEBUG_PRINT("Setting LED...\n");
     HAL_GPIO_WritePin(DEBUG_LED1_GPIO_Port, DEBUG_LED1_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(GPIO1_GPIO_Port, GPIO1_Pin, GPIO_PIN_SET);
     osTimerStart(Debug_Blink_OffHandle, LED_FLASH_TIME);
@@ -112,7 +110,7 @@ void DebugUART(void *argument)
  */
 void DebugPrintf(const char *format, ...)
 {
-  DebugMessage_t debugMessage;
+  static DebugMessage_t debugMessage;
 
   va_list args;
   va_start(args, format);

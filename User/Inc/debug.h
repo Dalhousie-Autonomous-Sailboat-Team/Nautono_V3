@@ -15,7 +15,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define DEBUG_MESSAGE_SIZE 32
+#define DEBUG_MESSAGE_SIZE 64
 typedef struct {
     char message[DEBUG_MESSAGE_SIZE];
 } DebugMessage_t;

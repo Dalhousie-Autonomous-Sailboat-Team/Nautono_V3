@@ -81,6 +81,11 @@ osMessageQueueId_t PrintMessageQueueHandle;
 const osMessageQueueAttr_t PrintMessageQueue_attributes = {
   .name = "PrintMessageQueue"
 };
+/* Definitions for I2C1_Event */
+osEventFlagsId_t I2C1_EventHandle;
+const osEventFlagsAttr_t I2C1_Event_attributes = {
+  .name = "I2C1_Event"
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -145,6 +150,9 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
+
+  /* creation of I2C1_Event */
+  I2C1_EventHandle = osEventFlagsNew(&I2C1_Event_attributes);
 
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */
