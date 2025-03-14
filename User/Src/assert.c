@@ -14,6 +14,7 @@
  #include <string.h>
  #include <stdint.h>
  #include "cmsis_gcc.h"
+ #include "FreeRTOS.h"
  
  #include "assert.h"
  
@@ -32,8 +33,6 @@
      const size_t msg_len = strnlen(msg, LAST_MSG_LEN - 1);
      memset(last_words, 0, LAST_MSG_LEN);
      memcpy(last_words, msg, msg_len);
- 
-     // TODO: Print a message on the UART.
  
      __BKPT(100);
  }
