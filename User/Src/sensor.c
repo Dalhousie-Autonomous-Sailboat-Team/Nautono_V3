@@ -34,6 +34,8 @@
 
 extern I2C_HandleTypeDef hi2c1;
 extern osEventFlagsId_t I2C1_EventHandle;
+extern osEventFlagsId_t Power_EventHandle;
+extern osMutexId_t PowerConversionDataHandle;
 
 /* INA Addresses */
 uint8_t sensor_addresses[] = {INA1, INA2, INA3};
@@ -42,7 +44,7 @@ uint8_t register_addresses[] = {CONFIGURATION, REG_CH1_SHUNT, REG_CH1_VOLTAGE,
                                   REG_CH3_VOLTAGE, MASK_ENABLE, MANUFACTURER_ID, DIE_ID};
 
 /* Should Change to Thread Safe */
-uint8_t power_data[NUMBER_OF_INA][2*NUMBER_OF_DATA_REGISTERS];
+uint8_t raw_conversion_data[NUMBER_OF_INA][2*NUMBER_OF_DATA_REGISTERS];
 
 /**
 * @brief Read Current and Power Measurements for each INA channel.
@@ -62,7 +64,7 @@ __weak void MeasurePower(void *argument)
     {
       retry_count = 0;
 
-      /* Trigger Single Shot Conversion */
+      /* Trigger Conversion */
       do 
       {
         /* Ensure the I2C bus is not busy before initiating the transfer */
@@ -95,6 +97,12 @@ __weak void MeasurePower(void *argument)
     }
     /* Wait for Conversions to finish */
     osDelay(CONVERSION_DELAY);
+
+    /* Take Power Conversion Data Mutex */
+    osMutexAcquire(PowerConversionDataHandle, osWaitForever);
+    /* Clear Data Ready Flag */
+    osEventFlagsClear(Power_EventHandle, PWR_RDY_FLAG);
+
     /* Loop Through Each INA*/
     for (int i = 0; i < NUMBER_OF_INA; i++)
     {
@@ -117,7 +125,7 @@ __weak void MeasurePower(void *argument)
         osEventFlagsClear(I2C1_EventHandle, RX_FLAG | ERR_FLAG);
 
         /* Read Conversion Registers */
-        if (HAL_I2C_Mem_Read_IT(&hi2c1, sensor_addresses[i] << 1, register_addresses[j + 1], I2C_MEMADD_SIZE_8BIT, &power_data[i][2*j], 2) != HAL_OK) 
+        if (HAL_I2C_Mem_Read_IT(&hi2c1, sensor_addresses[i] << 1, register_addresses[j + 1], I2C_MEMADD_SIZE_8BIT, &raw_conversion_data[i][2*j], 2) != HAL_OK) 
         {
           DEBUG_PRINT("Error reading from INA device, retrying\n");
           osDelay(1);
@@ -136,6 +144,10 @@ __weak void MeasurePower(void *argument)
       }
       }
     }
+    /* Release Power Conversion Data Mutex */
+    osMutexRelease(PowerConversionDataHandle);
+    /* Signal Logging Task */
+    osEventFlagsSet(Power_EventHandle, PWR_RDY_FLAG);
     osDelay(MEASURE_POWER_TASK_DELAY);
   }
 

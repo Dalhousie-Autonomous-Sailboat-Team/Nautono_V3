@@ -66,6 +66,11 @@ const osThreadAttr_t DebugUART_attributes = {
   .priority = (osPriority_t) osPriorityNormal,
   .stack_size = 256 * 4
 };
+/* Definitions for PowerConversionData */
+osMutexId_t PowerConversionDataHandle;
+const osMutexAttr_t PowerConversionData_attributes = {
+  .name = "PowerConversionData"
+};
 /* Definitions for Debug_Blink_On */
 osTimerId_t Debug_Blink_OnHandle;
 const osTimerAttr_t Debug_Blink_On_attributes = {
@@ -85,6 +90,11 @@ const osMessageQueueAttr_t PrintMessageQueue_attributes = {
 osEventFlagsId_t I2C1_EventHandle;
 const osEventFlagsAttr_t I2C1_Event_attributes = {
   .name = "I2C1_Event"
+};
+/* Definitions for Power_Event */
+osEventFlagsId_t Power_EventHandle;
+const osEventFlagsAttr_t Power_Event_attributes = {
+  .name = "Power_Event"
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -115,6 +125,8 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
+  /* creation of PowerConversionData */
+  PowerConversionDataHandle = osMutexNew(&PowerConversionData_attributes);
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
@@ -153,6 +165,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of I2C1_Event */
   I2C1_EventHandle = osEventFlagsNew(&I2C1_Event_attributes);
+
+  /* creation of Power_Event */
+  Power_EventHandle = osEventFlagsNew(&Power_Event_attributes);
 
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */

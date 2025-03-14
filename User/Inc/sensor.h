@@ -12,6 +12,7 @@
 #define TX_FLAG 0x01
 #define RX_FLAG 0x02
 #define ERR_FLAG 0x04
+#define PWR_RDY_FLAG 0x01
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -35,6 +36,16 @@ enum register_addresses
     MASK_ENABLE = 0x0F,
     MANUFACTURER_ID = 0xFE,
     DIE_ID = 0xFF
+};
+
+enum conversion_indices
+{
+    CH1_SHUNT = 0,
+    CH1_VOLTAGE = 2,
+    CH2_SHUNT = 4,
+    CH2_VOLTAGE = 6,
+    CH3_SHUNT = 8,
+    CH3_VOLTAGE = 10
 };
 
 #endif /* SENSOR_H */
