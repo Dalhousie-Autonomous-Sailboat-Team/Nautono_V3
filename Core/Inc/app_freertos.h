@@ -57,12 +57,17 @@ extern "C" {
 extern osThreadId_t defaultTaskHandle;
 extern osThreadId_t Measure_PowerHandle;
 extern osThreadId_t DebugUARTHandle;
+extern osThreadId_t Measure_AnglesHandle;
+extern osThreadId_t Control_MotorsHandle;
 extern osMutexId_t PowerConversionDataHandle;
+extern osMutexId_t AngleDataHandle;
 extern osTimerId_t Debug_Blink_OnHandle;
 extern osTimerId_t Debug_Blink_OffHandle;
 extern osMessageQueueId_t PrintMessageQueueHandle;
 extern osEventFlagsId_t I2C1_EventHandle;
 extern osEventFlagsId_t Power_EventHandle;
+extern osEventFlagsId_t UART4_EventHandle;
+extern osEventFlagsId_t I2C2_EventHandle;
 
 /* Exported function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -72,6 +77,8 @@ extern osEventFlagsId_t Power_EventHandle;
 void StartDefaultTask(void *argument);
 void MeasurePower(void *argument);
 void DebugUART(void *argument);
+void Measure_Angles(void *argument);
+void Control_Motors(void *argument);
 void Set_LED(void *argument);
 void Clear_LED(void *argument);
 

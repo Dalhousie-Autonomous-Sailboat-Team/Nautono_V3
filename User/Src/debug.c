@@ -21,12 +21,17 @@
 #define LED_FLASH_PERIOD 2000
 #define LED_FLASH_TIME 50
 
+#define TX_FLAG 0x01
+#define RX_FLAG 0x02
+#define ERR_FLAG 0x04
+
 #define DEBUG_TASK_FLAG (1 << 0)
 
 extern osTimerId_t Debug_Blink_OnHandle;
 extern osTimerId_t Debug_Blink_OffHandle;
 extern osMessageQueueId_t PrintMessageQueueHandle;
 extern UART_HandleTypeDef huart4;
+extern osEventFlagsId_t UART4_EventHandle;
 
 volatile uint8_t uart4_rx_busy = false;
 volatile uint8_t uart4_tx_busy = false;
@@ -88,18 +93,21 @@ void DebugUART(void *argument)
   /* Infinite loop */
   while(true)
   {
-    osThreadFlagsWait(DEBUG_TASK_FLAG, osFlagsWaitAny, osWaitForever);
-
     while(osMessageQueueGet(PrintMessageQueueHandle, &debugMessage, NULL, 0) == osOK)
     {
-      while(uart4_tx_busy == true)
+      /* Ensure the UART bus is not busy before initiating the transfer */
+      while (HAL_UART_GetState(&huart4) != HAL_UART_STATE_READY)
       {
         osDelay(1);
       }
-      uart4_tx_busy = true;
+      /* Clear any previous event flags before starting a new transaction */
+      osEventFlagsClear(UART4_EventHandle, TX_FLAG | ERR_FLAG);   
       HAL_UART_Transmit_DMA(&huart4, (uint8_t *)debugMessage.message, strlen(debugMessage.message));
+      /* Block task until I2C handle finishes TX or an error occurs */
+      osEventFlagsWait(UART4_EventHandle, TX_FLAG | ERR_FLAG, osFlagsWaitAny, osWaitForever);
     }
-    
+    /* Wait for next message */
+    osThreadFlagsWait(DEBUG_TASK_FLAG, osFlagsWaitAny, osWaitForever);
   }
   UNUSED(argument);
 }

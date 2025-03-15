@@ -14,9 +14,8 @@
 #include <stdbool.h>
 
 extern osEventFlagsId_t I2C1_EventHandle;
-
-extern volatile uint8_t uart4_rx_busy;
-extern volatile uint8_t uart4_tx_busy;
+extern osEventFlagsId_t I2C2_EventHandle;
+extern osEventFlagsId_t UART4_EventHandle;
 
 /**
  * @brief UART Receive Interrupt Callback
@@ -28,8 +27,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
  {
    if(huart->Instance == UART4)
    {
-        /* Set the RxDone flag */
-        uart4_rx_busy = false;
+      osEventFlagsSet(UART4_EventHandle, RX_FLAG);  // Notify task that data is ready
    }
    UNUSED(Size);
  }
@@ -43,8 +41,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
     if (huart->Instance == UART4)  // Check if it is UART4
     {
-        /* Set the TxDone flag */
-        uart4_tx_busy = false;
+        osEventFlagsSet(UART4_EventHandle, TX_FLAG);  // Notify task that transmission is complete
     }
 }
 
@@ -59,10 +56,15 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c)
   {
     osEventFlagsSet(I2C1_EventHandle, RX_FLAG);  // Notify I2C task that data is ready
   }
+  if(hi2c->Instance == I2C2)
+  {
+    osEventFlagsSet(I2C2_EventHandle, RX_FLAG);  // Notify I2C task that data is ready
+  }
 }
 
 /**
- * @brief I2C Transmit Complete Callback
+ * @brief I2C Memory Transmit Complete Callback
+ * - Called when a write to specific slave memory address is complete
  * 
  * @param hi2c 
  */
@@ -73,6 +75,20 @@ void HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c)
     osEventFlagsSet(I2C1_EventHandle, TX_FLAG);  // Notify task that transmission is complete
   }
 }
+
+/**
+ * @brief I2C Master Transmit Complete Callback
+ * - Called when a write to a slave without specifying a memory address is complete
+ * 
+ * @param hi2c
+ */
+ void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
+ {
+  if(hi2c->Instance == I2C2)
+  {
+    osEventFlagsSet(I2C2_EventHandle, TX_FLAG);  // Notify task that transmission is complete
+  }
+ }
 
 /**
  * @brief I2C Error Interrupt Callback
@@ -105,7 +121,8 @@ void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
     }
 
     osEventFlagsSet(I2C1_EventHandle, ERR_FLAG);  // Notify task that an error occurred
+    osEventFlagsSet(I2C2_EventHandle, ERR_FLAG);  // Notify task that an error occurred
     // Reinitialize I2C to recover from serious errors
-    HAL_I2C_DeInit(hi2c);
-    HAL_I2C_Init(hi2c);
+    //HAL_I2C_DeInit(hi2c);
+    //HAL_I2C_Init(hi2c);
 }

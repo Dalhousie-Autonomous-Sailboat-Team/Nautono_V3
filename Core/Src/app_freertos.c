@@ -66,10 +66,29 @@ const osThreadAttr_t DebugUART_attributes = {
   .priority = (osPriority_t) osPriorityNormal,
   .stack_size = 256 * 4
 };
+/* Definitions for Measure_Angles */
+osThreadId_t Measure_AnglesHandle;
+const osThreadAttr_t Measure_Angles_attributes = {
+  .name = "Measure_Angles",
+  .priority = (osPriority_t) osPriorityAboveNormal,
+  .stack_size = 256 * 4
+};
+/* Definitions for Control_Motors */
+osThreadId_t Control_MotorsHandle;
+const osThreadAttr_t Control_Motors_attributes = {
+  .name = "Control_Motors",
+  .priority = (osPriority_t) osPriorityHigh,
+  .stack_size = 128 * 4
+};
 /* Definitions for PowerConversionData */
 osMutexId_t PowerConversionDataHandle;
 const osMutexAttr_t PowerConversionData_attributes = {
   .name = "PowerConversionData"
+};
+/* Definitions for AngleData */
+osMutexId_t AngleDataHandle;
+const osMutexAttr_t AngleData_attributes = {
+  .name = "AngleData"
 };
 /* Definitions for Debug_Blink_On */
 osTimerId_t Debug_Blink_OnHandle;
@@ -95,6 +114,16 @@ const osEventFlagsAttr_t I2C1_Event_attributes = {
 osEventFlagsId_t Power_EventHandle;
 const osEventFlagsAttr_t Power_Event_attributes = {
   .name = "Power_Event"
+};
+/* Definitions for UART4_Event */
+osEventFlagsId_t UART4_EventHandle;
+const osEventFlagsAttr_t UART4_Event_attributes = {
+  .name = "UART4_Event"
+};
+/* Definitions for I2C2_Event */
+osEventFlagsId_t I2C2_EventHandle;
+const osEventFlagsAttr_t I2C2_Event_attributes = {
+  .name = "I2C2_Event"
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -128,6 +157,9 @@ void MX_FREERTOS_Init(void) {
   /* creation of PowerConversionData */
   PowerConversionDataHandle = osMutexNew(&PowerConversionData_attributes);
 
+  /* creation of AngleData */
+  AngleDataHandle = osMutexNew(&AngleData_attributes);
+
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
@@ -159,6 +191,12 @@ void MX_FREERTOS_Init(void) {
   /* creation of DebugUART */
   DebugUARTHandle = osThreadNew(DebugUART, NULL, &DebugUART_attributes);
 
+  /* creation of Measure_Angles */
+  Measure_AnglesHandle = osThreadNew(Measure_Angles, NULL, &Measure_Angles_attributes);
+
+  /* creation of Control_Motors */
+  Control_MotorsHandle = osThreadNew(Control_Motors, NULL, &Control_Motors_attributes);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -168,6 +206,12 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of Power_Event */
   Power_EventHandle = osEventFlagsNew(&Power_Event_attributes);
+
+  /* creation of UART4_Event */
+  UART4_EventHandle = osEventFlagsNew(&UART4_Event_attributes);
+
+  /* creation of I2C2_Event */
+  I2C2_EventHandle = osEventFlagsNew(&I2C2_Event_attributes);
 
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */
@@ -229,6 +273,43 @@ __weak void DebugUART(void *argument)
     osDelay(1);
   }
   /* USER CODE END DebugUART */
+}
+
+/* USER CODE BEGIN Header_Measure_Angles */
+/**
+* @brief Function implementing the Measure_Angles thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_Measure_Angles */
+__weak void Measure_Angles(void *argument)
+{
+  /* USER CODE BEGIN Measure_Angles */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  UNUSED(argument);
+  /* USER CODE END Measure_Angles */
+}
+
+/* USER CODE BEGIN Header_Control_Motors */
+/**
+* @brief Function implementing the Control_Motors thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_Control_Motors */
+__weak void Control_Motors(void *argument)
+{
+  /* USER CODE BEGIN Control_Motors */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END Control_Motors */
 }
 
 /* Set_LED function */
