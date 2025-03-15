@@ -53,6 +53,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     User/Src/sensor.c
     User/Src/serial_config.c
     User/Src/assert.c
+    User/Src/motor.c
 
 )
 
