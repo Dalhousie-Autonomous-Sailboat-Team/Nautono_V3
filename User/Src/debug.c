@@ -65,7 +65,7 @@ void StartDefaultTask(void *argument)
 void Set_LED(void *argument)
 {
     HAL_GPIO_WritePin(DEBUG_LED1_GPIO_Port, DEBUG_LED1_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(GPIO1_GPIO_Port, GPIO1_Pin, GPIO_PIN_SET);
+    //HAL_GPIO_WritePin(GPIO1_GPIO_Port, GPIO1_Pin, GPIO_PIN_SET);
     osTimerStart(Debug_Blink_OffHandle, LED_FLASH_TIME);
     UNUSED(argument);
 }
@@ -78,7 +78,7 @@ void Set_LED(void *argument)
 void Clear_LED(void *argument)
 {
     HAL_GPIO_WritePin(DEBUG_LED1_GPIO_Port, DEBUG_LED1_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(GPIO1_GPIO_Port, GPIO1_Pin, GPIO_PIN_RESET);
+    // HAL_GPIO_WritePin(GPIO1_GPIO_Port, GPIO1_Pin, GPIO_PIN_RESET);
     UNUSED(argument);
 }
 
