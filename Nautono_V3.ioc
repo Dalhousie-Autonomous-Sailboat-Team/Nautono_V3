@@ -585,5 +585,6 @@ rtos.0.tasks.1=allocationType,Dynamic;bufferName,NULL;codeGen,As weak;controlBlo
 rtos.0.tasks.2=allocationType,Dynamic;bufferName,NULL;codeGen,As weak;controlBlockName,NULL;entry,DebugUART;name,DebugUART;parameter,NULL;priority,osPriorityNormal;stackSize,256
 rtos.0.tasks.3=allocationType,Dynamic;bufferName,NULL;codeGen,As weak;controlBlockName,NULL;entry,Measure_Angles;name,Measure_Angles;parameter,NULL;priority,osPriorityAboveNormal;stackSize,256
 rtos.0.tasks.4=allocationType,Dynamic;bufferName,NULL;codeGen,As weak;controlBlockName,NULL;entry,Control_Motors;name,Control_Motors;parameter,NULL;priority,osPriorityHigh;stackSize,128
+rtos.0.tasks.5=allocationType,Dynamic;bufferName,NULL;codeGen,As weak;controlBlockName,NULL;entry,Xsens_Comms;name,Xsens_Comms;parameter,NULL;priority,osPriorityNormal;stackSize,256
 rtos.0.timers.0=allocationType,Dynamic;codeGen,As weak;controlBlockName,NULL;entry,Set_LED;name,Debug_Blink_On;parameter,NULL;type,osTimerPeriodic
 rtos.0.timers.1=allocationType,Dynamic;codeGen,As weak;controlBlockName,NULL;entry,Clear_LED;name,Debug_Blink_Off;parameter,NULL;type,osTimerOnce

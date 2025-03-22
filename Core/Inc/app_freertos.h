@@ -59,6 +59,7 @@ extern osThreadId_t Measure_PowerHandle;
 extern osThreadId_t DebugUARTHandle;
 extern osThreadId_t Measure_AnglesHandle;
 extern osThreadId_t Control_MotorsHandle;
+extern osThreadId_t Xsens_CommsHandle;
 extern osMutexId_t PowerConversionDataHandle;
 extern osMutexId_t AngleDataHandle;
 extern osTimerId_t Debug_Blink_OnHandle;
@@ -79,6 +80,7 @@ void MeasurePower(void *argument);
 void DebugUART(void *argument);
 void Measure_Angles(void *argument);
 void Control_Motors(void *argument);
+void Xsens_Comms(void *argument);
 void Set_LED(void *argument);
 void Clear_LED(void *argument);
 

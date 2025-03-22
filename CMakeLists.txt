@@ -54,9 +54,11 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     User/Src/serial_config.c
     User/Src/assert.c
     User/Src/motor.c
+    User/Src/xsens.c
     Xsens/Src/xsens_utility.c 
     Xsens/Src/xsens_mti.c
     Xsens/Src/xsens_mdata2.c
+
 
 )
 

@@ -80,6 +80,13 @@ const osThreadAttr_t Control_Motors_attributes = {
   .priority = (osPriority_t) osPriorityHigh,
   .stack_size = 128 * 4
 };
+/* Definitions for Xsens_Comms */
+osThreadId_t Xsens_CommsHandle;
+const osThreadAttr_t Xsens_Comms_attributes = {
+  .name = "Xsens_Comms",
+  .priority = (osPriority_t) osPriorityNormal,
+  .stack_size = 256 * 4
+};
 /* Definitions for PowerConversionData */
 osMutexId_t PowerConversionDataHandle;
 const osMutexAttr_t PowerConversionData_attributes = {
@@ -197,6 +204,9 @@ void MX_FREERTOS_Init(void) {
   /* creation of Control_Motors */
   Control_MotorsHandle = osThreadNew(Control_Motors, NULL, &Control_Motors_attributes);
 
+  /* creation of Xsens_Comms */
+  Xsens_CommsHandle = osThreadNew(Xsens_Comms, NULL, &Xsens_Comms_attributes);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -310,6 +320,25 @@ __weak void Control_Motors(void *argument)
     osDelay(1);
   }
   /* USER CODE END Control_Motors */
+}
+
+/* USER CODE BEGIN Header_Xsens_Comms */
+/**
+* @brief Function implementing the Xsens_Comms thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_Xsens_Comms */
+__weak void Xsens_Comms(void *argument)
+{
+  /* USER CODE BEGIN Xsens_Comms */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+    UNUSED(argument);
+  }
+  /* USER CODE END Xsens_Comms */
 }
 
 /* Set_LED function */
