@@ -14,6 +14,7 @@
 #include "debug.h"
 
 extern TIM_HandleTypeDef htim1;
+extern TIM_HandleTypeDef htim2;
 
 /**
  * @brief Set Motor PWM Duty Cycle
@@ -22,25 +23,26 @@ extern TIM_HandleTypeDef htim1;
  */
 void Control_Motors(void *argument)
 {
-    /* Set Motor1 Out2 Low */
-    HAL_GPIO_WritePin(MOTOR1_OUT2_GPIO_Port, MOTOR1_OUT2_Pin, GPIO_PIN_RESET);
-    /* Set initial PWM */
-    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+    // HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
+    // HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
+    // /* Set Motor1 Out2 Low */
+    // HAL_GPIO_WritePin(MOTOR2_OUT1_GPIO_Port, MOTOR2_OUT1_Pin, GPIO_PIN_RESET);
+    // /* Set Motor1 Out2 Low */
+    // HAL_GPIO_WritePin(MOTOR2_OUT2_GPIO_Port, MOTOR2_OUT2_Pin, GPIO_PIN_RESET);
+    // __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 170000);
+    // __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 170000);
+    // while(true)
+    // {
+    //     HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
+    //     HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+    //     osDelay(1000);
+    //     HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
+    //     HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+    //     osDelay(1000);
+    // }
     while(true)
     {
-        /* Loop through duty cycles up and down */
-        for (int i = 0; i < 100; i++)
-        {
-            /* Set PWM Duty Cycle */
-            __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 34*i);
-            osDelay(10);
-        }
-        for (int i = 100; i > 0; i--)
-        {
-            /* Set PWM Duty Cycle */
-            __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 34*i);
-            osDelay(10);
-        }
+        osDelay(1000);
     }
     UNUSED(argument);
 }

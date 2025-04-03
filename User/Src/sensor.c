@@ -58,7 +58,6 @@ uint8_t register_addresses[] = {CONFIGURATION, REG_CH1_SHUNT, REG_CH1_VOLTAGE,
                                   REG_CH3_VOLTAGE, MASK_ENABLE, MANUFACTURER_ID, DIE_ID};
 uint8_t angle_sensor_channels[] = {MAST_ANGLE_CHANNEL, RUDDER_ANGLE_CHANNEL, FLAP1_ANGLE_CHANNEL, FLAP2_ANGLE_CHANNEL};
 
-
 uint8_t raw_conversion_data[INA_COUNT][2*INA_DATA_REGISTER_COUNT];
 uint8_t raw_angle_data[ANGLE_SENSOR_COUNT][2];
 
@@ -73,6 +72,7 @@ uint8_t raw_angle_data[ANGLE_SENSOR_COUNT][2];
 void Measure_Angles(void *argument)
 {
   static uint8_t angle_config = 0x00;
+
   while(true)
   {
     for (int i = 0; i < ANGLE_SENSOR_COUNT; i++)
