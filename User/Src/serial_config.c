@@ -54,11 +54,11 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
   if(hi2c->Instance == I2C1)
   {
-    osEventFlagsSet(I2C1_EventHandle, RX_FLAG);  // Notify I2C task that data is ready
+    osEventFlagsSet(I2C1_EventHandle, RX_FLAG);  // Notify I2C1 task that data is ready
   }
-  if(hi2c->Instance == I2C2)
+  else if(hi2c->Instance == I2C2)
   {
-    osEventFlagsSet(I2C2_EventHandle, RX_FLAG);  // Notify I2C task that data is ready
+    osEventFlagsSet(I2C2_EventHandle, RX_FLAG);  // Notify I2C2 task that data is ready
   }
 }
 
@@ -72,7 +72,11 @@ void HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
   if(hi2c->Instance == I2C1)
   {
-    osEventFlagsSet(I2C1_EventHandle, TX_FLAG);  // Notify task that transmission is complete
+    osEventFlagsSet(I2C1_EventHandle, TX_FLAG);  // Notify I2C1 task that transmission is complete
+  }
+  else if(hi2c->Instance == I2C2)
+  {
+    osEventFlagsSet(I2C2_EventHandle, TX_FLAG);  // Notify I2C2 task that transmission is complete
   }
 }
 
@@ -82,13 +86,17 @@ void HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c)
  * 
  * @param hi2c
  */
- void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
- {
-  if(hi2c->Instance == I2C2)
+void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
+{
+  if(hi2c->Instance == I2C1)
   {
-    osEventFlagsSet(I2C2_EventHandle, TX_FLAG);  // Notify task that transmission is complete
+    osEventFlagsSet(I2C1_EventHandle, TX_FLAG);  // Notify I2C1 task that transmission is complete
   }
- }
+  else if(hi2c->Instance == I2C2)
+  {
+    osEventFlagsSet(I2C2_EventHandle, TX_FLAG);  // Notify I2C2 task that transmission is complete
+  }
+}
 
 /**
  * @brief I2C Error Interrupt Callback
@@ -120,9 +128,12 @@ void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
         // Reset the I2C bus if needed
     }
 
-    osEventFlagsSet(I2C1_EventHandle, ERR_FLAG);  // Notify task that an error occurred
-    osEventFlagsSet(I2C2_EventHandle, ERR_FLAG);  // Notify task that an error occurred
-    // Reinitialize I2C to recover from serious errors
-    //HAL_I2C_DeInit(hi2c);
-    //HAL_I2C_Init(hi2c);
+    if(hi2c->Instance == I2C1)
+    {
+        osEventFlagsSet(I2C1_EventHandle, ERR_FLAG);  // Notify I2C1 task that an error occurred
+    }
+    else if(hi2c->Instance == I2C2)
+    {
+        osEventFlagsSet(I2C2_EventHandle, ERR_FLAG);  // Notify I2C2 task that an error occurred
+    }
 }
