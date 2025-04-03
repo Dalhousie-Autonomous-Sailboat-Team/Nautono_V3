@@ -23,23 +23,28 @@ extern TIM_HandleTypeDef htim2;
  */
 void Control_Motors(void *argument)
 {
-    // HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
-    // HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
-    // /* Set Motor1 Out2 Low */
-    // HAL_GPIO_WritePin(MOTOR2_OUT1_GPIO_Port, MOTOR2_OUT1_Pin, GPIO_PIN_RESET);
-    // /* Set Motor1 Out2 Low */
-    // HAL_GPIO_WritePin(MOTOR2_OUT2_GPIO_Port, MOTOR2_OUT2_Pin, GPIO_PIN_RESET);
-    // __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 170000);
-    // __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 170000);
-    // while(true)
-    // {
-    //     HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
-    //     HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-    //     osDelay(1000);
-    //     HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
-    //     HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
-    //     osDelay(1000);
-    // }
+    uint32_t compareValue = 1000;
+    int step = 100;
+
+    // Start PWM on Timer 1 Channel 3
+    if (HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3) != HAL_OK)
+    {
+        DEBUG_PRINT("Failed to start PWM on Timer 1 Channel 3");
+        return;
+    }
+
+    while (true)
+    {
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, compareValue);
+        compareValue += step;
+
+        if (compareValue >= 2000 || compareValue <= 1000)
+        {
+            step = -step; // Reverse direction
+        }
+
+        osDelay(100);
+    }
     while(true)
     {
         osDelay(1000);

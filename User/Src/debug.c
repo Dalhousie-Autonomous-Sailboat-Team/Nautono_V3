@@ -50,7 +50,7 @@ void StartDefaultTask(void *argument)
     osTimerStart(Debug_Blink_OnHandle, LED_FLASH_PERIOD);
   #endif
 
-    /* Infinite loop */
+    /* Suspend Task Indefinitely */
     vTaskSuspend(NULL);
     UNUSED(argument);
 }
@@ -65,7 +65,6 @@ void StartDefaultTask(void *argument)
 void Set_LED(void *argument)
 {
     HAL_GPIO_WritePin(DEBUG_LED1_GPIO_Port, DEBUG_LED1_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(GPIO1_GPIO_Port, GPIO1_Pin, GPIO_PIN_SET);
     osTimerStart(Debug_Blink_OffHandle, LED_FLASH_TIME);
     UNUSED(argument);
 }
@@ -78,7 +77,6 @@ void Set_LED(void *argument)
 void Clear_LED(void *argument)
 {
     HAL_GPIO_WritePin(DEBUG_LED1_GPIO_Port, DEBUG_LED1_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(GPIO1_GPIO_Port, GPIO1_Pin, GPIO_PIN_RESET);
     UNUSED(argument);
 }
 
@@ -93,6 +91,7 @@ void DebugUART(void *argument)
   /* Infinite loop */
   while(true)
   {
+    /* If there are messages in the queue, send them to the UART */
     while(osMessageQueueGet(PrintMessageQueueHandle, &debugMessage, NULL, 0) == osOK)
     {
       /* Ensure the UART bus is not busy before initiating the transfer */
@@ -103,7 +102,7 @@ void DebugUART(void *argument)
       /* Clear any previous event flags before starting a new transaction */
       osEventFlagsClear(UART4_EventHandle, TX_FLAG | ERR_FLAG);   
       HAL_UART_Transmit_DMA(&huart4, (uint8_t *)debugMessage.message, strlen(debugMessage.message));
-      /* Block task until I2C handle finishes TX or an error occurs */
+      /* Block task until UART handle finishes TX or an error occurs */
       osEventFlagsWait(UART4_EventHandle, TX_FLAG | ERR_FLAG, osFlagsWaitAny, osWaitForever);
     }
     /* Wait for next message */
@@ -113,7 +112,9 @@ void DebugUART(void *argument)
 }
 
 /**
- * @brief Asynchronous debug printf.
+ * @brief Asynchronous debug printf.  Note that this function is not thread-safe.
+ * - If data is changed before being added to the queue, it may be corrupted.
+ * - This can be a problem for frequent tasks that call this function.
  * 
  */
 void DebugPrintf(const char *format, ...)

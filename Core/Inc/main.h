@@ -105,8 +105,8 @@ void Error_Handler(void);
 #define DEBUG_LED1_GPIO_Port GPIOA
 #define DEBUG_LED2_Pin GPIO_PIN_9
 #define DEBUG_LED2_GPIO_Port GPIOA
-#define GPIO1_Pin GPIO_PIN_10
-#define GPIO1_GPIO_Port GPIOA
+#define Rudder_PWM_Pin GPIO_PIN_10
+#define Rudder_PWM_GPIO_Port GPIOA
 #define GPIO2_Pin GPIO_PIN_11
 #define GPIO2_GPIO_Port GPIOA
 #define GPIO3_Pin GPIO_PIN_12
