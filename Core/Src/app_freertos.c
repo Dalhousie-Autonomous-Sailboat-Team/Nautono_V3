@@ -80,6 +80,13 @@ const osThreadAttr_t Control_Motors_attributes = {
   .priority = (osPriority_t) osPriorityHigh,
   .stack_size = 128 * 4
 };
+/* Definitions for Radio_Control */
+osThreadId_t Radio_ControlHandle;
+const osThreadAttr_t Radio_Control_attributes = {
+  .name = "Radio_Control",
+  .priority = (osPriority_t) osPriorityNormal,
+  .stack_size = 512 * 4
+};
 /* Definitions for PowerConversionData */
 osMutexId_t PowerConversionDataHandle;
 const osMutexAttr_t PowerConversionData_attributes = {
@@ -124,6 +131,16 @@ const osEventFlagsAttr_t UART4_Event_attributes = {
 osEventFlagsId_t I2C2_EventHandle;
 const osEventFlagsAttr_t I2C2_Event_attributes = {
   .name = "I2C2_Event"
+};
+/* Definitions for UART8_Event */
+osEventFlagsId_t UART8_EventHandle;
+const osEventFlagsAttr_t UART8_Event_attributes = {
+  .name = "UART8_Event"
+};
+/* Definitions for Radio_Event */
+osEventFlagsId_t Radio_EventHandle;
+const osEventFlagsAttr_t Radio_Event_attributes = {
+  .name = "Radio_Event"
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -197,6 +214,9 @@ void MX_FREERTOS_Init(void) {
   /* creation of Control_Motors */
   Control_MotorsHandle = osThreadNew(Control_Motors, NULL, &Control_Motors_attributes);
 
+  /* creation of Radio_Control */
+  Radio_ControlHandle = osThreadNew(Radio_Control, NULL, &Radio_Control_attributes);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -212,6 +232,12 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of I2C2_Event */
   I2C2_EventHandle = osEventFlagsNew(&I2C2_Event_attributes);
+
+  /* creation of UART8_Event */
+  UART8_EventHandle = osEventFlagsNew(&UART8_Event_attributes);
+
+  /* creation of Radio_Event */
+  Radio_EventHandle = osEventFlagsNew(&Radio_Event_attributes);
 
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */
@@ -309,7 +335,27 @@ __weak void Control_Motors(void *argument)
   {
     osDelay(1);
   }
+  UNUSED(argument);
   /* USER CODE END Control_Motors */
+}
+
+/* USER CODE BEGIN Header_Radio_Control */
+/**
+* @brief Function implementing the Radio_Control thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_Radio_Control */
+__weak void Radio_Control(void *argument)
+{
+  /* USER CODE BEGIN Radio_Control */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  UNUSED(argument);
+  /* USER CODE END Radio_Control */
 }
 
 /* Set_LED function */

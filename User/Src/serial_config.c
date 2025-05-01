@@ -16,6 +16,9 @@
 extern osEventFlagsId_t I2C1_EventHandle;
 extern osEventFlagsId_t I2C2_EventHandle;
 extern osEventFlagsId_t UART4_EventHandle;
+extern osEventFlagsId_t UART8_EventHandle;
+
+extern volatile uint8_t uart8_rx_len;
 
 /**
  * @brief UART Receive Interrupt Callback
@@ -28,6 +31,11 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
    if(huart->Instance == UART4)
    {
       osEventFlagsSet(UART4_EventHandle, RX_FLAG);  // Notify task that data is ready
+   }
+   else if(huart->Instance == UART8)
+   {
+      osEventFlagsSet(UART8_EventHandle, RX_FLAG);  // Notify task that data is ready
+      uart8_rx_len = Size;
    }
    UNUSED(Size);
  }
@@ -42,6 +50,10 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
     if (huart->Instance == UART4)  // Check if it is UART4
     {
         osEventFlagsSet(UART4_EventHandle, TX_FLAG);  // Notify task that transmission is complete
+    }
+    else if (huart->Instance == UART8)  // Check if it is UART8
+    {
+        osEventFlagsSet(UART8_EventHandle, TX_FLAG);  // Notify task that transmission is complete
     }
 }
 
