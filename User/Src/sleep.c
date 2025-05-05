@@ -11,6 +11,12 @@
 
 #include "sleep.h"
 
+/**
+ * @brief Pre Sleep Processing
+ * - This function is called before the system enters sleep mode.
+ * 
+ * @param ulExpectedIdleTime 
+ */
 void PreSleepProcessing(uint32_t ulExpectedIdleTime)
 {
     /* Disable Systick */
@@ -25,6 +31,12 @@ void PreSleepProcessing(uint32_t ulExpectedIdleTime)
     (void)ulExpectedIdleTime;
 }
 
+/**
+ * @brief Post Sleep Processing
+ * - This function is called after the system exits sleep mode.
+ * 
+ * @param ulExpectedIdleTime 
+ */
 void PostSleepProcessing(uint32_t ulExpectedIdleTime)
 {
     /* Re-enable Systick */

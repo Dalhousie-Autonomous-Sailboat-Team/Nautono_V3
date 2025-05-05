@@ -56,13 +56,12 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-extern DMA_HandleTypeDef handle_GPDMA2_Channel1;
-extern DMA_HandleTypeDef handle_GPDMA2_Channel0;
 extern I2C_HandleTypeDef hi2c1;
 extern I2C_HandleTypeDef hi2c2;
 extern DMA_HandleTypeDef handle_GPDMA1_Channel1;
 extern DMA_HandleTypeDef handle_GPDMA1_Channel0;
 extern UART_HandleTypeDef huart4;
+extern UART_HandleTypeDef huart8;
 extern TIM_HandleTypeDef htim6;
 
 /* USER CODE BEGIN EV */
@@ -280,31 +279,17 @@ void UART4_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles GPDMA2 Channel 0 global interrupt.
+  * @brief This function handles UART8 global interrupt.
   */
-void GPDMA2_Channel0_IRQHandler(void)
+void UART8_IRQHandler(void)
 {
-  /* USER CODE BEGIN GPDMA2_Channel0_IRQn 0 */
+  /* USER CODE BEGIN UART8_IRQn 0 */
 
-  /* USER CODE END GPDMA2_Channel0_IRQn 0 */
-  HAL_DMA_IRQHandler(&handle_GPDMA2_Channel0);
-  /* USER CODE BEGIN GPDMA2_Channel0_IRQn 1 */
+  /* USER CODE END UART8_IRQn 0 */
+  HAL_UART_IRQHandler(&huart8);
+  /* USER CODE BEGIN UART8_IRQn 1 */
 
-  /* USER CODE END GPDMA2_Channel0_IRQn 1 */
-}
-
-/**
-  * @brief This function handles GPDMA2 Channel 1 global interrupt.
-  */
-void GPDMA2_Channel1_IRQHandler(void)
-{
-  /* USER CODE BEGIN GPDMA2_Channel1_IRQn 0 */
-
-  /* USER CODE END GPDMA2_Channel1_IRQn 0 */
-  HAL_DMA_IRQHandler(&handle_GPDMA2_Channel1);
-  /* USER CODE BEGIN GPDMA2_Channel1_IRQn 1 */
-
-  /* USER CODE END GPDMA2_Channel1_IRQn 1 */
+  /* USER CODE END UART8_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

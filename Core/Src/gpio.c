@@ -55,8 +55,10 @@ void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOC, HSE_ENABLE_Pin|GPIO4_Pin|RS422_nRE_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, DEBUG_LED1_Pin|DEBUG_LED2_Pin|GPIO1_Pin|GPIO2_Pin
-                          |GPIO3_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, DEBUG_LED1_Pin|DEBUG_LED2_Pin|GPIO3_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIO2_GPIO_Port, GPIO2_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, WINDVANE_EN_Pin|BEACON_EN_Pin, GPIO_PIN_RESET);
@@ -68,10 +70,8 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : DEBUG_LED1_Pin DEBUG_LED2_Pin GPIO1_Pin GPIO2_Pin
-                           GPIO3_Pin */
-  GPIO_InitStruct.Pin = DEBUG_LED1_Pin|DEBUG_LED2_Pin|GPIO1_Pin|GPIO2_Pin
-                          |GPIO3_Pin;
+  /*Configure GPIO pins : DEBUG_LED1_Pin DEBUG_LED2_Pin GPIO2_Pin GPIO3_Pin */
+  GPIO_InitStruct.Pin = DEBUG_LED1_Pin|DEBUG_LED2_Pin|GPIO2_Pin|GPIO3_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

@@ -54,6 +54,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     User/Src/serial_config.c
     User/Src/assert.c
     User/Src/motor.c
+    User/Src/radio_control.c
 
 )
 
@@ -61,6 +62,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
     User/Inc/
+    Drivers/3rd_Party/Inc
 )
 
 # Add project symbols (macros)

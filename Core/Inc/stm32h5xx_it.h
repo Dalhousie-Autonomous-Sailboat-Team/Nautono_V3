@@ -60,8 +60,7 @@ void I2C1_ER_IRQHandler(void);
 void I2C2_EV_IRQHandler(void);
 void I2C2_ER_IRQHandler(void);
 void UART4_IRQHandler(void);
-void GPDMA2_Channel0_IRQHandler(void);
-void GPDMA2_Channel1_IRQHandler(void);
+void UART8_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */
