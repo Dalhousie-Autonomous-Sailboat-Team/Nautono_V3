@@ -35,23 +35,3 @@ This revision is based around the STM32H573 microcontroller, and runs FreeRTOS. 
 If you get errors relating to unknown commands, ensure that both STM32CubeCLT and J-Link are properly added to your PATH.
 
 If you get errors relating to the build system, make sure you have the STM32CubeCLT installed and added to your PATH.  Ensure you are using the GCC for ARM compiler.
-
-I have not tested this board using an ST-Link debugger.  I highly suggest using J-Link.
-
-## Notes
-
-LED 1 is currently used as a heartbeat indicator.  It will blink every 1000ms.
-LED 2 is currently used as a sleep indicator.  It will turn on when the board is in sleep mode.  This signal is also mapped to GPIO4.
-
-The MCU will attempt to go to sleep when there are no tasks to run.  It will wake up when an interrupt is triggered.  This is the first level of low power mode offered by this MCU.
-
-## Task Schedule
-
-| Task            | Period  |
-|-----------------|---------|
-| Heartbeat Task  | 1000ms  |
-| Measure Power   | TBD     |
-| Measure Angles  | TBD     |
-| Measure GPS     | TBD     |
-| Measure Wind    | TBD     |
-| Send Data       | TBD     |
