@@ -11,20 +11,20 @@
  * COPYRIGHT NOTICE: (c) 2025 DalMAST. All rights reserved.
  */
 
- #ifndef ASSERT_H
- #define ASSERT_H
- 
- #define ASSERT(expr, msg) \
-     do                        \
-     {                         \
-         if (!(expr))          \
-         {                     \
-             assert(msg);  \
-         }                     \
-     } while (0)
- 
- void assert(const char *msg);
- 
- #endif /* ASSERT_H */
- 
- /*** end of file ***/
+#ifndef ASSERT_H
+#define ASSERT_H
+
+void assert(const char *msg);
+
+#define ASSERT(expr, msg) \
+    do                    \
+    {                     \
+        if (!(expr))      \
+        {                 \
+            assert(msg);  \
+        }                 \
+    } while (0)
+
+#endif /* ASSERT_H */
+
+/*** end of file ***/
