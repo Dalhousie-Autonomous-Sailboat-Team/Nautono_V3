@@ -70,7 +70,7 @@ const osThreadAttr_t DebugUART_attributes = {
 osThreadId_t Measure_AnglesHandle;
 const osThreadAttr_t Measure_Angles_attributes = {
   .name = "Measure_Angles",
-  .priority = (osPriority_t) osPriorityAboveNormal,
+  .priority = (osPriority_t) osPriorityHigh,
   .stack_size = 256 * 4
 };
 /* Definitions for Control_Motors */
@@ -86,6 +86,20 @@ const osThreadAttr_t Radio_Control_attributes = {
   .name = "Radio_Control",
   .priority = (osPriority_t) osPriorityNormal,
   .stack_size = 512 * 4
+};
+/* Definitions for Mast_Control_Loop */
+osThreadId_t Mast_Control_LoopHandle;
+const osThreadAttr_t Mast_Control_Loop_attributes = {
+  .name = "Mast_Control_Loop",
+  .priority = (osPriority_t) osPriorityRealtime,
+  .stack_size = 128 * 4
+};
+/* Definitions for Flap_Control_Loop */
+osThreadId_t Flap_Control_LoopHandle;
+const osThreadAttr_t Flap_Control_Loop_attributes = {
+  .name = "Flap_Control_Loop",
+  .priority = (osPriority_t) osPriorityRealtime,
+  .stack_size = 128 * 4
 };
 /* Definitions for PowerConversionData */
 osMutexId_t PowerConversionDataHandle;
@@ -216,6 +230,12 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of Radio_Control */
   Radio_ControlHandle = osThreadNew(Radio_Control, NULL, &Radio_Control_attributes);
+
+  /* creation of Mast_Control_Loop */
+  Mast_Control_LoopHandle = osThreadNew(Mast_Control_Loop, NULL, &Mast_Control_Loop_attributes);
+
+  /* creation of Flap_Control_Loop */
+  Flap_Control_LoopHandle = osThreadNew(Flap_Control_Loop, NULL, &Flap_Control_Loop_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -356,6 +376,42 @@ __weak void Radio_Control(void *argument)
   }
   UNUSED(argument);
   /* USER CODE END Radio_Control */
+}
+
+/* USER CODE BEGIN Header_Mast_Control_Loop */
+/**
+* @brief Function implementing the Mast_Control_Loop thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_Mast_Control_Loop */
+__weak void Mast_Control_Loop(void *argument)
+{
+  /* USER CODE BEGIN Mast_Control_Loop */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END Mast_Control_Loop */
+}
+
+/* USER CODE BEGIN Header_Flap_Control_Loop */
+/**
+* @brief Function implementing the Flap_Control_Loop thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_Flap_Control_Loop */
+__weak void Flap_Control_Loop(void *argument)
+{
+  /* USER CODE BEGIN Flap_Control_Loop */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END Flap_Control_Loop */
 }
 
 /* Set_LED function */

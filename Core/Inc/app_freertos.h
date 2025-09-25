@@ -60,6 +60,8 @@ extern osThreadId_t DebugUARTHandle;
 extern osThreadId_t Measure_AnglesHandle;
 extern osThreadId_t Control_MotorsHandle;
 extern osThreadId_t Radio_ControlHandle;
+extern osThreadId_t Mast_Control_LoopHandle;
+extern osThreadId_t Flap_Control_LoopHandle;
 extern osMutexId_t PowerConversionDataHandle;
 extern osMutexId_t AngleDataHandle;
 extern osTimerId_t Debug_Blink_OnHandle;
@@ -83,6 +85,8 @@ void DebugUART(void *argument);
 void Measure_Angles(void *argument);
 void Control_Motors(void *argument);
 void Radio_Control(void *argument);
+void Mast_Control_Loop(void *argument);
+void Flap_Control_Loop(void *argument);
 void Set_LED(void *argument);
 void Clear_LED(void *argument);
 
