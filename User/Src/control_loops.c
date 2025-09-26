@@ -17,7 +17,7 @@ void Mast_Control_Loop(void *argument)
     /* Infinite loop */
     for (;;)
     {
-        osDelay(1);
+        osDelay(1000);
     }
 }
 
@@ -32,6 +32,6 @@ void Flap_Control_Loop(void *argument)
     /* Infinite loop */
     for (;;)
     {
-        osDelay(1);
+        osDelay(1000);
     }
 }
