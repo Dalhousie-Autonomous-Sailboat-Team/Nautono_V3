@@ -14,7 +14,7 @@
 #include "debug.h"
 
 #define MEASURE_POWER_TASK_DELAY 1000
-#define ANGLE_SENSOR_TASK_DELAY 1
+#define ANGLE_SENSOR_TASK_DELAY 2
 #define INA_CONVERSION_DELAY 100
 
 #define INA_COUNT 3
@@ -25,6 +25,11 @@
 #define AS5600_ADDRESS 0x36
 #define AS5600_ANGLE_REG 0x0E
 #define ANGLE_SENSOR_COUNT 4
+
+/* Uncomment to disable debug prints in this file */
+// #define DEBUG_PRINT(...)
+
+#define ENABLED_ANGLE_SENSOR_CHANNELS (MAST_ANGLE_CHANNEL | FLAP1_ANGLE_CHANNEL) // | RUDDER_ANGLE_CHANNEL | FLAP1_ANGLE_CHANNEL | FLAP2_ANGLE_CHANNEL)
 
 /* INA Configuration
   - All Channels Enabled
@@ -60,25 +65,21 @@ uint8_t angle_sensor_channels[] = {MAST_ANGLE_CHANNEL, RUDDER_ANGLE_CHANNEL, FLA
 
 uint8_t raw_conversion_data[INA_COUNT][2 * INA_DATA_REGISTER_COUNT];
 uint8_t raw_angle_data[ANGLE_SENSOR_COUNT][2];
-uint32_t angle_timestamps[ANGLE_SENSOR_COUNT] = {0}; /* Store timestamps for each angle sensor */
 
 /**
  * @brief RTOS Task - Read Angle Measurements from AS5600 sensors via I2C MUX
+ * - Read angle for Mast (ch0)
  * - Select sensor channel via MUX
- * - Retry failed sensors 5 times, then defer retry for 30 seconds
  * - Read the angle register from each AS5600 device
  * - Store the raw data and timestamp in shared memory
- * - Run periodically based on ANGLE_SENSOR_TASK_DELAY
+ * - Run at 1 kHz
  * @param argument: Not used
  * @retval None
  */
 void Measure_Angles(void *argument)
 {
   static uint8_t angle_config = 0x00;
-  int retry_count = 0;
   uint32_t flags = 0U;
-  bool sensor_failed[ANGLE_SENSOR_COUNT] = {false}; /* Track failed sensors */
-  uint32_t lastRetryTime[ANGLE_SENSOR_COUNT] = {0}; /* Track last retry time for each sensor */
 
   while (true)
   {
@@ -87,93 +88,70 @@ void Measure_Angles(void *argument)
     /* Loop through each angle sensor */
     for (int i = 0; i < ANGLE_SENSOR_COUNT; i++)
     {
-      /* If sensor previously failed, only retry every 30 seconds */
-      if (sensor_failed[i] && (currentTime - lastRetryTime[i] < pdMS_TO_TICKS(30000)))
+      /* Skip disabled channels */
+      if (!(1 << (i + 4) & ENABLED_ANGLE_SENSOR_CHANNELS))
       {
         continue;
       }
 
-      retry_count = 0;
-      /* Attempt to select sensor via MUX */
-      do
+      /* Select sensor via MUX */
+      /* Wait for I2C bus to be ready before starting the transaction */
+      while (HAL_I2C_GetState(&hi2c2) != HAL_I2C_STATE_READY)
       {
-        /* Wait for I2C bus to be ready before starting the transaction */
-        while (HAL_I2C_GetState(&hi2c2) != HAL_I2C_STATE_READY)
-        {
-          osDelay(1);
-        }
+        osThreadYield(); /* Yield to other equal priority tasks while waiting */
+      }
 
-        /* Clear previous event flags */
-        osEventFlagsClear(I2C2_EventHandle, TX_FLAG | ERR_FLAG);
+      /* Clear previous event flags */
+      osEventFlagsClear(I2C2_EventHandle, TX_FLAG | ERR_FLAG);
 
-        /* Write to MUX to select sensor channel */
-        angle_config = angle_sensor_channels[i];
-        if (HAL_I2C_Master_Transmit_IT(&hi2c2, (I2C_MUX_ADDRESS << 1), &angle_config, 1) != HAL_OK)
-        {
-          DEBUG_PRINT("Error writing to I2C MUX channel %d, retrying\n", i);
-          osDelay(1);
-        }
+      /* Write to MUX to select sensor channel */
+      angle_config = angle_sensor_channels[i];
+      if (HAL_I2C_Master_Transmit_IT(&hi2c2, (I2C_MUX_ADDRESS << 1), &angle_config, 1) != HAL_OK)
+      {
+        DEBUG_PRINT("Error writing to I2C MUX channel %d\n", i);
+      }
 
-        /* Wait for TX complete or error */
-        flags = osEventFlagsWait(I2C2_EventHandle, TX_FLAG | ERR_FLAG, osFlagsWaitAny, osWaitForever);
-        retry_count++;
+      /* Wait for TX complete or error */
+      flags = osEventFlagsWait(I2C2_EventHandle, TX_FLAG | ERR_FLAG, osFlagsWaitAny, osWaitForever);
 
-      } while ((flags & ERR_FLAG) && (retry_count < MAX_I2C_RETRIES));
-
-      /* If max retries reached, mark sensor as failed */
+      /* If unsuccessful, skip this sensor and try again next cycle */
       if (flags & ERR_FLAG)
       {
-        DEBUG_PRINT("Max retries reached for MUX channel %d, deferring retry for 30s.\n", i);
+        DEBUG_PRINT("Error received from I2C MUX channel %d\n", i);
         continue;
       }
-
-      /* If successful, clear failed flag */
-      sensor_failed[i] = false;
-
-      retry_count = 0;
 
       /* Acquire Mutex to write to shared memory */
       osMutexAcquire(AngleDataHandle, osWaitForever);
 
       /* Attempt to read angle data from sensor */
-      do
+      while (HAL_I2C_GetState(&hi2c2) != HAL_I2C_STATE_READY)
       {
-        while (HAL_I2C_GetState(&hi2c2) != HAL_I2C_STATE_READY)
-        {
-          osDelay(1);
-        }
-
-        osEventFlagsClear(I2C2_EventHandle, RX_FLAG | ERR_FLAG);
-
-        /* Read 2 bytes from angle register */
-        if (HAL_I2C_Mem_Read_IT(&hi2c2, (AS5600_ADDRESS << 1), AS5600_ANGLE_REG, I2C_MEMADD_SIZE_8BIT, raw_angle_data[i], 2) != HAL_OK)
-        {
-          DEBUG_PRINT("Error reading from AS5600 channel %d, retrying\n", i);
-          osDelay(1);
-        }
-
-        /* Wait for RX complete or error */
-        flags = osEventFlagsWait(I2C2_EventHandle, RX_FLAG | ERR_FLAG, osFlagsWaitAny, osWaitForever);
-        retry_count++;
-
-      } while ((flags & ERR_FLAG) && (retry_count < MAX_I2C_RETRIES));
-
-      /* If successful, store timestamp */
-      if (!(flags & ERR_FLAG))
-      {
-        angle_timestamps[i] = osKernelGetTickCount(); /* Timestamp successful measurement */
+        osThreadYield(); /* Yield to other equal priority tasks while waiting */
       }
-      else
+
+      osEventFlagsClear(I2C2_EventHandle, RX_FLAG | ERR_FLAG);
+
+      /* Read 2 bytes from angle register */
+      if (HAL_I2C_Mem_Read_IT(&hi2c2, (AS5600_ADDRESS << 1), AS5600_ANGLE_REG, I2C_MEMADD_SIZE_8BIT, raw_angle_data[i], 2) != HAL_OK)
       {
-        sensor_failed[i] = true;
-        lastRetryTime[i] = currentTime;
-        DEBUG_PRINT("Max retries reached reading angle for channel %d.\n", i);
+        DEBUG_PRINT("Error initiating read from AS5600 channel %d\n", i);
+      }
+
+      /* Wait for RX complete or error */
+      flags = osEventFlagsWait(I2C2_EventHandle, RX_FLAG | ERR_FLAG, osFlagsWaitAny, osWaitForever);
+
+      /* If unsuccessful, skip this sensor and try again next cycle */
+      if ((flags & ERR_FLAG))
+      {
+        DEBUG_PRINT("Error received from AS5600 channel %d.\n", i);
       }
       osMutexRelease(AngleDataHandle);
+      DEBUG_PRINT("Angle Sensor %d: Raw Angle = %02X%02X at time %lu\n", i, raw_angle_data[i][0], raw_angle_data[i][1], currentTime);
     }
 
     /* Wait before the next measurement cycle */
-    osDelay(ANGLE_SENSOR_TASK_DELAY);
+    osDelayUntil(currentTime + ANGLE_SENSOR_TASK_DELAY);
   }
 
   UNUSED(argument); /* Prevent unused argument compiler warning */
@@ -221,7 +199,7 @@ void MeasurePower(void *argument)
         /* Wait for I2C bus to be ready before starting the transaction */
         while (HAL_I2C_GetState(&hi2c1) != HAL_I2C_STATE_READY)
         {
-          osDelay(1);
+          osDelay(1); /* Delay 1 ms as timing is not critical */
         }
 
         /* Clear any previous event flags before starting a new transaction */
