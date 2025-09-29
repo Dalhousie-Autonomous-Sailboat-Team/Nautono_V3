@@ -13,8 +13,8 @@
 
 #include "debug.h"
 
-#define MEASURE_POWER_TASK_DELAY 900
-#define ANGLE_SENSOR_TASK_DELAY 100
+#define MEASURE_POWER_TASK_DELAY 1000
+#define ANGLE_SENSOR_TASK_DELAY 1
 #define INA_CONVERSION_DELAY 100
 
 #define INA_COUNT 3
@@ -26,7 +26,7 @@
 #define AS5600_ANGLE_REG 0x0E
 #define ANGLE_SENSOR_COUNT 4
 
-/* INA Configuration 
+/* INA Configuration
   - All Channels Enabled
   - 16 Sample Average
   - 204 us Voltage Conversion Time
@@ -53,32 +53,32 @@ extern osMutexId_t AngleDataHandle;
 
 /* INA Addresses */
 uint8_t sensor_addresses[] = {INA1, INA2, INA3};
-uint8_t register_addresses[] = {CONFIGURATION, REG_CH1_SHUNT, REG_CH1_VOLTAGE, 
-                                  REG_CH2_SHUNT, REG_CH2_VOLTAGE, REG_CH3_SHUNT, 
-                                  REG_CH3_VOLTAGE, MASK_ENABLE, MANUFACTURER_ID, DIE_ID};
+uint8_t register_addresses[] = {CONFIGURATION, REG_CH1_SHUNT, REG_CH1_VOLTAGE,
+                                REG_CH2_SHUNT, REG_CH2_VOLTAGE, REG_CH3_SHUNT,
+                                REG_CH3_VOLTAGE, MASK_ENABLE, MANUFACTURER_ID, DIE_ID};
 uint8_t angle_sensor_channels[] = {MAST_ANGLE_CHANNEL, RUDDER_ANGLE_CHANNEL, FLAP1_ANGLE_CHANNEL, FLAP2_ANGLE_CHANNEL};
 
-uint8_t raw_conversion_data[INA_COUNT][2*INA_DATA_REGISTER_COUNT];
+uint8_t raw_conversion_data[INA_COUNT][2 * INA_DATA_REGISTER_COUNT];
 uint8_t raw_angle_data[ANGLE_SENSOR_COUNT][2];
 uint32_t angle_timestamps[ANGLE_SENSOR_COUNT] = {0}; /* Store timestamps for each angle sensor */
 
 /**
-* @brief RTOS Task - Read Angle Measurements from AS5600 sensors via I2C MUX
-* - Select sensor channel via MUX
-* - Retry failed sensors 5 times, then defer retry for 30 seconds
-* - Read the angle register from each AS5600 device
-* - Store the raw data and timestamp in shared memory
-* - Run periodically based on ANGLE_SENSOR_TASK_DELAY
-* @param argument: Not used
-* @retval None
-*/
+ * @brief RTOS Task - Read Angle Measurements from AS5600 sensors via I2C MUX
+ * - Select sensor channel via MUX
+ * - Retry failed sensors 5 times, then defer retry for 30 seconds
+ * - Read the angle register from each AS5600 device
+ * - Store the raw data and timestamp in shared memory
+ * - Run periodically based on ANGLE_SENSOR_TASK_DELAY
+ * @param argument: Not used
+ * @retval None
+ */
 void Measure_Angles(void *argument)
 {
   static uint8_t angle_config = 0x00;
   int retry_count = 0;
   uint32_t flags = 0U;
-  bool sensor_failed[ANGLE_SENSOR_COUNT] = { false };  /* Track failed sensors */
-  uint32_t lastRetryTime[ANGLE_SENSOR_COUNT] = { 0 }; /* Track last retry time for each sensor */
+  bool sensor_failed[ANGLE_SENSOR_COUNT] = {false}; /* Track failed sensors */
+  uint32_t lastRetryTime[ANGLE_SENSOR_COUNT] = {0}; /* Track last retry time for each sensor */
 
   while (true)
   {
@@ -161,7 +161,7 @@ void Measure_Angles(void *argument)
       /* If successful, store timestamp */
       if (!(flags & ERR_FLAG))
       {
-        angle_timestamps[i] = osKernelGetTickCount();  /* Timestamp successful measurement */
+        angle_timestamps[i] = osKernelGetTickCount(); /* Timestamp successful measurement */
       }
       else
       {
@@ -176,28 +176,28 @@ void Measure_Angles(void *argument)
     osDelay(ANGLE_SENSOR_TASK_DELAY);
   }
 
-  UNUSED(argument);  /* Prevent unused argument compiler warning */
+  UNUSED(argument); /* Prevent unused argument compiler warning */
 }
 
 /**
-* @brief RTOS Task - Read Current and Power Measurements for each INA channel.
-* - Write to each INA device to configure it for the next measurement
-* - Retry failed sensors 5 times, then defer retry for 30 seconds
-* - Read the current and voltage data from each INA device
-* - Store the data in shared memory
-* - Notify the main thread when the data is ready
-* - Run once per second (100 ms conversion delay + 900 ms task delay)
-* @param argument: Not used
-* @retval None
-*/
+ * @brief RTOS Task - Read Current and Power Measurements for each INA channel.
+ * - Write to each INA device to configure it for the next measurement
+ * - Retry failed sensors 5 times, then defer retry for 30 seconds
+ * - Read the current and voltage data from each INA device
+ * - Store the data in shared memory
+ * - Notify the main thread when the data is ready
+ * - Run once per second (100 ms conversion delay + 900 ms task delay)
+ * @param argument: Not used
+ * @retval None
+ */
 void MeasurePower(void *argument)
 {
   static uint16_t ina_config = (uint16_t)((INA_CONFIGURATION >> 8) | (INA_CONFIGURATION << 8));
 
   uint32_t flags = 0U;
   int retry_count = 0;
-  bool sensor_failed[INA_COUNT] = { false };  /* Track failed sensors */
-  uint32_t lastRetryTime = osKernelGetTickCount(); 
+  bool sensor_failed[INA_COUNT] = {false}; /* Track failed sensors */
+  uint32_t lastRetryTime = osKernelGetTickCount();
 
   /* Main loop for measuring power */
   while (true)
@@ -219,7 +219,7 @@ void MeasurePower(void *argument)
       do
       {
         /* Wait for I2C bus to be ready before starting the transaction */
-        while (HAL_I2C_GetState(&hi2c1) != HAL_I2C_STATE_READY) 
+        while (HAL_I2C_GetState(&hi2c1) != HAL_I2C_STATE_READY)
         {
           osDelay(1);
         }
@@ -228,7 +228,7 @@ void MeasurePower(void *argument)
         osEventFlagsClear(I2C1_EventHandle, TX_FLAG | ERR_FLAG);
 
         /* Write Configuration to INA device */
-        if (HAL_I2C_Mem_Write_IT(&hi2c1, sensor_addresses[i] << 1, CONFIGURATION, I2C_MEMADD_SIZE_8BIT, (uint8_t *)&ina_config, 2) != HAL_OK) 
+        if (HAL_I2C_Mem_Write_IT(&hi2c1, sensor_addresses[i] << 1, CONFIGURATION, I2C_MEMADD_SIZE_8BIT, (uint8_t *)&ina_config, 2) != HAL_OK)
         {
           DEBUG_PRINT("Error writing to INA device %d, retrying\n", i);
           osDelay(1);
@@ -238,20 +238,20 @@ void MeasurePower(void *argument)
         flags = osEventFlagsWait(I2C1_EventHandle, TX_FLAG | ERR_FLAG, osFlagsWaitAny, osWaitForever);
         retry_count++;
 
-      /* Continue retrying if an error occurred and the retry count is less than MAX_I2C_RETRIES */
+        /* Continue retrying if an error occurred and the retry count is less than MAX_I2C_RETRIES */
       } while ((flags & ERR_FLAG) && (retry_count < MAX_I2C_RETRIES));
 
       /* If the maximum number of retries is reached, mark the sensor as failed */
       if (flags & ERR_FLAG)
       {
         DEBUG_PRINT("Max retries reached for INA device %d, deferring retry for 30s.\n", i);
-        sensor_failed[i] = true;  /* Mark as failed, retry later */
+        sensor_failed[i] = true; /* Mark as failed, retry later */
         lastRetryTime = currentTime;
         continue;
       }
 
       /* If write was successful, clear the failed flag */
-      sensor_failed[i] = false;  /* Sensor recovered */
+      sensor_failed[i] = false; /* Sensor recovered */
     }
 
     /* Wait for INA_CoNVERSION_DELAY ms to allow ADC conversion to complete */
@@ -280,7 +280,7 @@ void MeasurePower(void *argument)
         do
         {
           /* Wait for I2C bus to be ready before starting the transaction */
-          while (HAL_I2C_GetState(&hi2c1) != HAL_I2C_STATE_READY) 
+          while (HAL_I2C_GetState(&hi2c1) != HAL_I2C_STATE_READY)
           {
             osDelay(1);
           }
@@ -289,7 +289,7 @@ void MeasurePower(void *argument)
           osEventFlagsClear(I2C1_EventHandle, RX_FLAG | ERR_FLAG);
 
           /* Read the data from the INA device */
-          if (HAL_I2C_Mem_Read_IT(&hi2c1, sensor_addresses[i] << 1, register_addresses[j + 1], I2C_MEMADD_SIZE_8BIT, &raw_conversion_data[i][2*j], 2) != HAL_OK) 
+          if (HAL_I2C_Mem_Read_IT(&hi2c1, sensor_addresses[i] << 1, register_addresses[j + 1], I2C_MEMADD_SIZE_8BIT, &raw_conversion_data[i][2 * j], 2) != HAL_OK)
           {
             DEBUG_PRINT("Error reading from INA device %d register %d, retrying\n", i, register_addresses[j]);
             osDelay(1);
@@ -299,7 +299,7 @@ void MeasurePower(void *argument)
           flags = osEventFlagsWait(I2C1_EventHandle, RX_FLAG | ERR_FLAG, osFlagsWaitAny, osWaitForever);
           retry_count++;
 
-        /* Continue retrying if an error occurred and the retry count is less than MAX_I2C_RETRIES */
+          /* Continue retrying if an error occurred and the retry count is less than MAX_I2C_RETRIES */
         } while ((flags & ERR_FLAG) && (retry_count < MAX_I2C_RETRIES));
 
         /* If the maximum number of retries is reached, mark the sensor as failed */

@@ -14,8 +14,8 @@
 /**
  * @brief Pre Sleep Processing
  * - This function is called before the system enters sleep mode.
- * 
- * @param ulExpectedIdleTime 
+ *
+ * @param ulExpectedIdleTime
  */
 void PreSleepProcessing(uint32_t ulExpectedIdleTime)
 {
@@ -34,8 +34,8 @@ void PreSleepProcessing(uint32_t ulExpectedIdleTime)
 /**
  * @brief Post Sleep Processing
  * - This function is called after the system exits sleep mode.
- * 
- * @param ulExpectedIdleTime 
+ *
+ * @param ulExpectedIdleTime
  */
 void PostSleepProcessing(uint32_t ulExpectedIdleTime)
 {
