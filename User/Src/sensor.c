@@ -14,7 +14,7 @@
 #include "debug.h"
 
 #define MEASURE_POWER_TASK_DELAY 1000
-#define ANGLE_SENSOR_TASK_DELAY 2
+#define ANGLE_SENSOR_TASK_DELAY 1
 #define INA_CONVERSION_DELAY 100
 
 #define INA_COUNT 3
@@ -24,7 +24,6 @@
 #define I2C_MUX_ADDRESS 0x70
 #define AS5600_ADDRESS 0x36
 #define AS5600_ANGLE_REG 0x0E
-#define ANGLE_SENSOR_COUNT 4
 
 /* Uncomment to disable debug prints in this file */
 // #define DEBUG_PRINT(...)
@@ -53,6 +52,7 @@ extern I2C_HandleTypeDef hi2c2;
 extern osEventFlagsId_t I2C1_EventHandle;
 extern osEventFlagsId_t I2C2_EventHandle;
 extern osEventFlagsId_t Power_EventHandle;
+extern osEventFlagsId_t Motor_Control_EventHandle;
 extern osMutexId_t PowerConversionDataHandle;
 extern osMutexId_t AngleDataHandle;
 
@@ -146,8 +146,29 @@ void Measure_Angles(void *argument)
       {
         DEBUG_PRINT("Error received from AS5600 channel %d.\n", i);
       }
+      else
+      {
+        /* Set the appropriate ready flag */
+        switch (i)
+        {
+        case 0:
+          osEventFlagsSet(Motor_Control_EventHandle, MAST_ANGLE_READY_FLAG);
+          break;
+        case 1:
+          osEventFlagsSet(Motor_Control_EventHandle, RUDDER_ANGLE_READY_FLAG);
+          break;
+        case 2:
+          osEventFlagsSet(Motor_Control_EventHandle, FLAP1_ANGLE_READY_FLAG);
+          break;
+        case 3:
+          osEventFlagsSet(Motor_Control_EventHandle, FLAP2_ANGLE_READY_FLAG);
+          break;
+        default:
+          break;
+        }
+      }
       osMutexRelease(AngleDataHandle);
-      DEBUG_PRINT("Angle Sensor %d: Raw Angle = %02X%02X at time %lu\n", i, raw_angle_data[i][0], raw_angle_data[i][1], currentTime);
+      // DEBUG_PRINT("Angle Sensor %d: Raw Angle = %02X%02X at time %lu\n", i, raw_angle_data[i][0], raw_angle_data[i][1], currentTime);
     }
 
     /* Wait before the next measurement cycle */

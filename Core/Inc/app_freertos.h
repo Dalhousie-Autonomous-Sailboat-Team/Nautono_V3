@@ -55,11 +55,11 @@ extern "C" {
 
 /* USER CODE END EM */
 extern osThreadId_t defaultTaskHandle;
-extern osThreadId_t Measure_PowerHandle;
 extern osThreadId_t DebugUARTHandle;
 extern osThreadId_t Measure_AnglesHandle;
 extern osThreadId_t Control_MotorsHandle;
 extern osThreadId_t Radio_ControlHandle;
+extern osThreadId_t Mast_ControlHandle;
 extern osMutexId_t PowerConversionDataHandle;
 extern osMutexId_t AngleDataHandle;
 extern osTimerId_t Debug_Blink_OnHandle;
@@ -71,18 +71,19 @@ extern osEventFlagsId_t UART4_EventHandle;
 extern osEventFlagsId_t I2C2_EventHandle;
 extern osEventFlagsId_t UART8_EventHandle;
 extern osEventFlagsId_t Radio_EventHandle;
+extern osEventFlagsId_t Motor_Control_EventHandle;
 
 /* Exported function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
 
 /* USER CODE END FunctionPrototypes */
 
-void StartDefaultTask(void *argument);
-void MeasurePower(void *argument);
-void DebugUART(void *argument);
-void Measure_Angles(void *argument);
-void Control_Motors(void *argument);
-void Radio_Control(void *argument);
+extern void StartDefaultTask(void *argument);
+extern void DebugUART(void *argument);
+extern void Measure_Angles(void *argument);
+extern void Control_Motors(void *argument);
+extern void Radio_Control(void *argument);
+extern void Mast_Control(void *argument);
 void Set_LED(void *argument);
 void Clear_LED(void *argument);
 

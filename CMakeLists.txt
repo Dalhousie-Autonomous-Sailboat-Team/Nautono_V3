@@ -53,6 +53,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     User/Src/assert.c
     User/Src/motor.c
     User/Src/radio_control.c
+    User/Src/feedback.c
 
 )
 

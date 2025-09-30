@@ -9,10 +9,16 @@
 #ifndef SENSOR_H
 #define SENSOR_H
 
+#define ANGLE_SENSOR_COUNT 4
+
 #define TX_FLAG 0x01
 #define RX_FLAG 0x02
 #define ERR_FLAG 0x04
 #define PWR_RDY_FLAG 0x01
+#define MAST_ANGLE_READY_FLAG 0x01
+#define RUDDER_ANGLE_READY_FLAG 0x02
+#define FLAP1_ANGLE_READY_FLAG 0x04
+#define FLAP2_ANGLE_READY_FLAG 0x08
 
 #include <stdint.h>
 #include <stdbool.h>

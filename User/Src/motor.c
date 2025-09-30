@@ -9,6 +9,7 @@
 #include "main.h"
 #include "cmsis_os2.h"
 #include "FreeRTOS.h"
+#include "task.h"
 
 #include "motor.h"
 #include "debug.h"
@@ -21,24 +22,26 @@ extern TIM_HandleTypeDef htim3;
 extern osEventFlagsId_t Radio_EventHandle;
 extern radio_control_t latest_radio_command;
 
-#define FLAP_MOTOR_DUTY_CYCLE 0.9f  // 90% duty cycle for flap motor
+#define FLAP_MOTOR_DUTY_CYCLE 0.9f // 90% duty cycle for flap motor
 
 /**
  * @brief Adjust Rudder Servo Position
- * 
- * @param angle 
+ *
+ * @param angle
  */
 void MoveRudder(int angle)
 {
   /* Clamp input to allowed range */
-  if (angle < -20) angle = -20;
-  if (angle > 20) angle = 20;
+  if (angle < -20)
+    angle = -20;
+  if (angle > 20)
+    angle = 20;
 
   /* Full servo range is ±90°, corresponding to 1.0ms–2.0ms pulse */
   /* Your range is a subset: -20° to +20° maps to 1.4ms–1.6ms */
 
-  const uint32_t min_pulse = 1200;  // 1.4 ms
-  const uint32_t max_pulse = 1800;  // 1.6 ms
+  const uint32_t min_pulse = 1200; // 1.4 ms
+  const uint32_t max_pulse = 1800; // 1.6 ms
 
   /* Linearly map angle [-20, +20] → pulse [1400, 1600] us */
   uint32_t pulse = min_pulse + ((angle + 20) * (max_pulse - min_pulse)) / 40;
@@ -49,13 +52,15 @@ void MoveRudder(int angle)
 
 /**
  * @brief Adjust Mast Motor Speed
- * 
+ *
  * @param speed Speed in percentage (-100 to 100)
  */
 void MoveMast(int speed)
 {
-  if (speed > 20) speed = 20;
-  if (speed < -20) speed = -20;
+  if (speed > 20)
+    speed = 20;
+  if (speed < -20)
+    speed = -20;
 
   uint32_t pwm = (abs(speed) * __HAL_TIM_GET_AUTORELOAD(&htim2)) / 20;
 
@@ -83,7 +88,7 @@ void MoveMast(int speed)
 
 /**
  * @brief Set Flap Motor Direction (full speed)
- * 
+ *
  * @param direction Positive = forward, Negative = reverse, 0 = stop
  */
 void MoveFlap(int direction)
@@ -108,34 +113,32 @@ void MoveFlap(int direction)
   }
 }
 
-
-
 /**
  * @brief Set Motor PWM Duty Cycle
- * 
- * @param argument 
+ *
+ * @param argument
  */
 void Control_Motors(void *argument)
 {
-    /* Start PWM on Timer1 Channel 3 */
-    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
-    /* Start PWM on Timer2 Channel 1 and 2 */
-    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
-    /* Start PWM on Timer3 Channel 1 and 2 */
-    HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
-    HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
+  /* Start PWM on Timer1 Channel 3 */
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
+  /* Start PWM on Timer2 Channel 1 and 2 */
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+  /* Start PWM on Timer3 Channel 1 and 2 */
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
 
-    while(true)
-    {
-        osEventFlagsWait(Radio_EventHandle, CMD_FLAG, osFlagsWaitAny, osWaitForever);
+  while (true)
+  {
+    osEventFlagsWait(Radio_EventHandle, CMD_FLAG, osFlagsWaitAny, osWaitForever);
 
-        radio_control_t cmd = latest_radio_command;
-    
-        MoveRudder(cmd.rudder);
-        MoveMast(cmd.mast);
-        MoveFlap(cmd.flap);
-    }
+    radio_control_t cmd = latest_radio_command;
 
-    UNUSED(argument);
+    MoveRudder(cmd.rudder);
+    MoveMast(cmd.mast);
+    MoveFlap(cmd.flap);
+  }
+
+  UNUSED(argument);
 }
