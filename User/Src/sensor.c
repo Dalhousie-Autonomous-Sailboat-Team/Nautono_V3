@@ -28,7 +28,7 @@
 /* Uncomment to disable debug prints in this file */
 // #define DEBUG_PRINT(...)
 
-#define ENABLED_ANGLE_SENSOR_CHANNELS (MAST_ANGLE_CHANNEL | FLAP1_ANGLE_CHANNEL) // | RUDDER_ANGLE_CHANNEL | FLAP1_ANGLE_CHANNEL | FLAP2_ANGLE_CHANNEL)
+#define ENABLED_ANGLE_SENSOR_CHANNELS (MAST_ANGLE_CHANNEL) //| FLAP1_ANGLE_CHANNEL) // | RUDDER_ANGLE_CHANNEL | FLAP1_ANGLE_CHANNEL | FLAP2_ANGLE_CHANNEL)
 
 /* INA Configuration
   - All Channels Enabled
@@ -168,7 +168,7 @@ void Measure_Angles(void *argument)
         }
       }
       osMutexRelease(AngleDataHandle);
-      // DEBUG_PRINT("Angle Sensor %d: Raw Angle = %02X%02X at time %lu\n", i, raw_angle_data[i][0], raw_angle_data[i][1], currentTime);
+      // DEBUG_PRINT("Angle Sensor %d Raw Data: 0x%02X%02X\n", i, raw_angle_data[i][0], raw_angle_data[i][1]);
     }
 
     /* Wait before the next measurement cycle */

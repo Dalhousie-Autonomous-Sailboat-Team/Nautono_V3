@@ -22,122 +22,80 @@ extern TIM_HandleTypeDef htim3;
 extern osEventFlagsId_t Radio_EventHandle;
 extern radio_control_t latest_radio_command;
 
-#define FLAP_MOTOR_DUTY_CYCLE 0.9f // 90% duty cycle for flap motor
+#define PWM_FREQUENCY 20000 /* 20 kHz */
 
-/**
- * @brief Adjust Rudder Servo Position
- *
- * @param angle
- */
-void MoveRudder(int angle)
+float mast_speed = 0.0f;
+
+void Set_Mast_Speed(float speed)
 {
-  /* Clamp input to allowed range */
-  if (angle < -20)
-    angle = -20;
-  if (angle > 20)
-    angle = 20;
-
-  /* Full servo range is ±90°, corresponding to 1.0ms–2.0ms pulse */
-  /* Your range is a subset: -20° to +20° maps to 1.4ms–1.6ms */
-
-  const uint32_t min_pulse = 1200; // 1.4 ms
-  const uint32_t max_pulse = 1800; // 1.6 ms
-
-  /* Linearly map angle [-20, +20] → pulse [1400, 1600] us */
-  uint32_t pulse = min_pulse + ((angle + 20) * (max_pulse - min_pulse)) / 40;
-
-  /* Apply to PWM (assuming 1 tick = 1 us resolution) */
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, pulse);
+  mast_speed = speed;
 }
 
-/**
- * @brief Adjust Mast Motor Speed
- *
- * @param speed Speed in percentage (-100 to 100)
- */
-void MoveMast(int speed)
+void Change_Mast_Speed(float speed)
 {
-  if (speed > 20)
-    speed = 20;
-  if (speed < -20)
-    speed = -20;
-
-  uint32_t pwm = (abs(speed) * __HAL_TIM_GET_AUTORELOAD(&htim2)) / 20;
-
-  if (speed > 0)
+  int direction;
+  /* Clamp speed to -100 to 100 */
+  if (speed > 100)
   {
-    /* Forward: CH1 = PWM, CH2 = always HIGH */
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, pwm);
-    //__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, __HAL_TIM_GET_AUTORELOAD(&htim2));
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 0);
+    speed = 100;
   }
-  else if (speed < 0)
+  else if (speed < -100)
   {
-    /* Reverse: CH1 = always HIGH, CH2 = PWM */
-    //__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, __HAL_TIM_GET_AUTORELOAD(&htim2));
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, pwm);
+    speed = -100;
+  }
+
+  if (speed >= 0)
+  {
+    direction = 1; /* Forward */
   }
   else
   {
-    /* Stop: both low (or use brake mode if needed) */
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 0);
+    direction = -1; /* Reverse */
+    speed = -speed; /* Make speed positive for PWM calculation */
+  }
+
+  /* Apply dead zone: set speed to 0 if within -1 to 1 */
+  if (speed < 0.1 && speed > -0.1)
+  {
+    direction = 0;
+    speed = 0;
+  }
+
+  /* Calculate the PWM duty cycle */
+  uint32_t pulse = (htim1.Init.Period + 1) * speed / 100 - 1;
+
+  if (direction == 1)
+  {
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, htim2.Init.Period); /* CH1 high (full on) */
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, pulse);             /* CH2 PWM */
+  }
+  else if (direction == -1)
+  {
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, pulse);             /* CH1 PWM */
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, htim2.Init.Period); /* CH2 high (full on) */
+  }
+  else if (direction == 0)
+  {
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, htim2.Init.Period); /* CH1 high (full on) */
+    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, htim2.Init.Period); /* CH2 high (full on) */
   }
 }
 
 /**
- * @brief Set Flap Motor Direction (full speed)
- *
- * @param direction Positive = forward, Negative = reverse, 0 = stop
- */
-void MoveFlap(int direction)
-{
-  if (direction > 0)
-  {
-    /* Forward: CH1 = 100%, CH2 = 0 */
-    __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, __HAL_TIM_GET_AUTORELOAD(&htim3) * FLAP_MOTOR_DUTY_CYCLE);
-    __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, 0);
-  }
-  else if (direction < 0)
-  {
-    /* Reverse: CH1 = 0, CH2 = 100% */
-    __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
-    __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, __HAL_TIM_GET_AUTORELOAD(&htim3) * FLAP_MOTOR_DUTY_CYCLE);
-  }
-  else
-  {
-    /* Stop: both low */
-    __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
-    __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, 0);
-  }
-}
-
-/**
- * @brief Set Motor PWM Duty Cycle
+ * @brief Start Motor PWM Duty Cycle
  *
  * @param argument
  */
 void Control_Motors(void *argument)
 {
-  /* Start PWM on Timer1 Channel 3 */
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
   /* Start PWM on Timer2 Channel 1 and 2 */
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
-  /* Start PWM on Timer3 Channel 1 and 2 */
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
 
-  while (true)
+  while (1)
   {
-    osEventFlagsWait(Radio_EventHandle, CMD_FLAG, osFlagsWaitAny, osWaitForever);
-
-    radio_control_t cmd = latest_radio_command;
-
-    MoveRudder(cmd.rudder);
-    MoveMast(cmd.mast);
-    MoveFlap(cmd.flap);
+    Change_Mast_Speed(mast_speed);
+    osDelay(10); /* Update every 50 ms */
   }
 
   UNUSED(argument);

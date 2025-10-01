@@ -14,10 +14,13 @@
 #include "motor.h"
 #include "sensor.h"
 #include "debug.h"
+#include "motor.h"
 
 extern osEventFlagsId_t Motor_Control_EventHandle;
 extern osMutexId_t AngleDataHandle;
 extern int16_t raw_angle_data[ANGLE_SENSOR_COUNT][2]; /* Shared memory for raw angle data */
+
+float output = 0.0f;
 
 /**
  * @brief Compute shortest signed error between setpoint and measurement in degrees.
@@ -59,7 +62,7 @@ static float PI_Update(feedback_t *c, float measurement, float dt)
     float new_integral = c->integral + (c->ki * error * dt);
 
     /* Compute unclamped output */
-    float output = p_term + new_integral;
+    output = p_term + new_integral;
 
     /* Clamp and apply anti-windup */
     if (output > c->output_max)
@@ -93,13 +96,13 @@ void Mast_Control(void *argument)
 {
     /* Initialize the feedback controller parameters */
     static feedback_t mast_controller = {
-        .kp = 0.9f,
+        .kp = 0.10f,
         .ki = 0.01f,
         .dt = 0.001f, /* Default time step (will be updated dynamically) */
         .integral = 0.0f,
-        .setpoint = 1.0f, /* Desired setpoint (to be set externally) */
-        .output_min = -1,
-        .output_max = 1};
+        .setpoint = 80.0f, /* Desired setpoint (to be set externally) */
+        .output_min = -100,
+        .output_max = 100};
 
     uint32_t last_tick = osKernelGetTickCount();
 
@@ -122,10 +125,10 @@ void Mast_Control(void *argument)
         last_tick = now;
 
         /* Update PI controller */
-        volatile float output = PI_Update(&mast_controller, current_angle, dt);
+        output = PI_Update(&mast_controller, current_angle, dt);
 
-        /* Send the output to the motor control function */
-        // DEBUG_PRINT("Mast Control: Setpoint=%.2f, Current=%.2f, Output=%.2f\n", mast_controller.setpoint, current_angle, output);
+        /* Set mast speed based on controller output */
+        Set_Mast_Speed(output);
     }
     UNUSED(argument);
 }

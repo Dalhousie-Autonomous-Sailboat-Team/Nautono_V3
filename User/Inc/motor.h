@@ -12,6 +12,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+void Set_Mast_Speed(float speed);
+
 #endif /* MOTOR_H */
 
 /*** end of file ***/
