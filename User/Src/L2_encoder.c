@@ -1,6 +1,5 @@
-#include "L2/encoder.h"
-#include "L1/user_i2c.h"
-#include "L1/user_uart.h"
+#include "L2_encoder.h"
+#include "L1_user_comms.h"
 #include <stdio.h>
 
 /* AS5600 constants */

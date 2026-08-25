@@ -1,6 +1,6 @@
 #ifndef WIND_H
 #define WIND_H
-#include "L2/app_types.h"
+#include "L2_app_types.h"
 
 
 void Wind_UpdateLatest(const WindSample_t *sample);

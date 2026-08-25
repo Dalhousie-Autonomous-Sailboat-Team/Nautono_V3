@@ -1,5 +1,5 @@
-#include "L2/xbee.h"
-#include "L2/app_types.h"
+#include "L2_xbee.h"
+#include "L2_app_types.h"
 #include "cmsis_os.h"
 
 extern osMutexId_t xbeeMutexHandle;

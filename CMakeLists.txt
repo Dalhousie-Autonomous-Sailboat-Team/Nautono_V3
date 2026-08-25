@@ -46,34 +46,28 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     User/Src/user_main.c
-    User/Src/Utils/assert.c
-    User/Src/L1/sleep.c
-    User/Src/L1/heartbeat.c
-    User/Src/L1/user_i2c.c
-    User/Src/L1/user_uart.c
-    User/Src/L1/pwm.c
-    User/Src/L2/serial_parser.c
-    User/Src/L3/command_dispatch.c
-    User/Src/L2/conversions.c
-    User/Src/L2/encoder.c
-    User/Src/L3/telemetry.c
-    User/Src/L2/pid.c
-    User/Src/L2/rpi.c
-    User/Src/L2/motor_control.c
-    User/Src/L3/boat_mode.c
-    User/Src/L2/wind.c
-    User/Src/L2/xbee.c
+    User/Src/assert.c
+    User/Src/L1_sleep.c
+    User/Src/L1_heartbeat.c
+    User/Src/L1_user_comms.c
+    User/Src/L1_pwm.c
+    User/Src/L2_serial_parser.c
+    User/Src/L3_command_dispatch.c
+    User/Src/L2_conversions.c
+    User/Src/L2_encoder.c
+    User/Src/L3_telemetry.c
+    User/Src/L2_pid.c
+    User/Src/L2_rpi.c
+    User/Src/L2_motor_control.c
+    User/Src/L3_boat_mode.c
+    User/Src/L2_wind.c
+    User/Src/L2_xbee.c
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
     User/Inc
-    User/Inc/Utils
-    User/Inc/L1
-    User/Inc/L2
-    User/Inc/L3
-    User/Inc/L4
 
 )
 

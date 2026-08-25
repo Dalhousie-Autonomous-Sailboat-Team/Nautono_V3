@@ -3,15 +3,16 @@
  * @brief Assembles sensor data and transmits JSON telemetry over XBee.
  */
 
-#include "L3/telemetry.h"
-#include "L2/encoder.h"
-#include "L2/app_types.h"
-#include "L1/user_uart.h"
-#include "cmsis_os.h"
-#include "L2/rpi.h"
-
 #include <stdio.h>
 #include <string.h>
+#include "cmsis_os.h"
+
+#include "L1_user_comms.h"
+#include "L2_encoder.h"
+#include "L2_app_types.h"
+#include "L2_rpi.h"
+#include "L3_telemetry.h"
+
 
 #define TELEMETRY_PERIOD_MS 1000
 #define TELEMETRY_BUF_LEN 256

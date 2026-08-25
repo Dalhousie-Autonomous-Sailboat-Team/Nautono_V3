@@ -5,7 +5,7 @@
  */
 
 /* Module Header */
-#include "serial_parser.h"
+#include "L2_serial_parser.h"
 
 /* System Headers */
 #include "main.h"
@@ -18,13 +18,13 @@
 #include <ctype.h>
 
 /* User Includes */
-#include "user_uart.h"
-#include "L3/command_dispatch.h"
-#include "L2/app_types.h"
-#include "L2/conversions.h"
-#include "L2/rpi.h"
-#include "L2/wind.h"
-#include "L2/xbee.h"
+#include "L1_user_comms.h"
+#include "L3_command_dispatch.h"
+#include "L2_app_types.h"
+#include "L2_conversions.h"
+#include "L2_rpi.h"
+#include "L2_wind.h"
+#include "L2_xbee.h"
 
 extern osMessageQueueId_t uart_rx_queueHandle;
 

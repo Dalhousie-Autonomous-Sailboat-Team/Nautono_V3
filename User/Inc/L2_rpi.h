@@ -1,7 +1,7 @@
 #ifndef RPI_H
 #define RPI_H
 
-#include "L2/app_types.h"
+#include "L2_app_types.h"
 
 void RpiTransmitTask(void *argument);
 void RPi_UpdateLatest(const RPiSample_t *sample);

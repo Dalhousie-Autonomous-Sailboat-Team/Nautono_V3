@@ -1,12 +1,12 @@
-#include "L2/rpi.h"
-#include "cmsis_os.h"
-#include "L1/user_uart.h"
-#include "L2/app_types.h"
-#include "L3/boat_mode.h"
-#include "L2/wind.h"
-
 #include <stdio.h>
 #include <string.h>
+#include "cmsis_os.h"
+
+#include "L1_user_comms.h"
+#include "L2_rpi.h"
+#include "L2_app_types.h"
+#include "L2_wind.h"
+#include "L3_boat_mode.h"
 
 
 extern osMutexId_t rpiMutexHandle;

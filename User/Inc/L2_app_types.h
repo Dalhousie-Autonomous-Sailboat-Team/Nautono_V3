@@ -4,9 +4,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include <stdint.h>
-#include <stdbool.h>
-
 // Struct to store $IIMWV NMEA sentence data
 typedef struct
 {

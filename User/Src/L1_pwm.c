@@ -5,7 +5,7 @@
  */
 
 /* Module Header */
-#include "pwm.h"
+#include "L1_pwm.h"
 
 /* System Headers */
 #include "main.h"

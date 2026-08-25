@@ -22,12 +22,11 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "user_i2c.h"
-#include "user_uart.h"
-#include "L2/app_types.h"
-#include "L3/telemetry.h"
-#include "L2/rpi.h"
-#include "L2/motor_control.h"
+#include "L1_user_comms.h"
+#include "L2_app_types.h"
+#include "L3_telemetry.h"
+#include "L2_rpi.h"
+#include "L2_motor_control.h"
 
 /* USER CODE END Includes */
 

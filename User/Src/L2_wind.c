@@ -1,5 +1,5 @@
-#include "L2/wind.h"
-#include "L2/app_types.h"
+#include "L2_wind.h"
+#include "L2_app_types.h"
 #include "cmsis_os.h"
 
 

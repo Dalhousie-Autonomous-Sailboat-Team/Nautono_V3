@@ -6,7 +6,6 @@
 #define LED_SLEEP_INDICATOR /* Uncomment to enable sleep indicator LEDs */
 
 /* Module Header */
-#include "sleep.h"
 
 /* System Headers */
 #include "main.h"

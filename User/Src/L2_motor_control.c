@@ -1,16 +1,17 @@
-#include "L2/motor_control.h"
-
-#include "pid.h"
-#include "L2/encoder.h"
-#include "L2/rpi.h"
 #include "cmsis_os.h"
 #include "tim.h"
-#include "L1/user_uart.h"
 #include <stdint.h>
 #include <stdio.h>
-#include "L3/boat_mode.h"
-#include "L2/wind.h"
-#include "L2/xbee.h"
+
+#include "L1_user_comms.h"
+#include "L2_motor_control.h"
+#include "L2_pid.h"
+#include "L2_encoder.h"
+#include "L2_wind.h"
+#include "L2_xbee.h"
+#include "L2_rpi.h"
+#include "L3_boat_mode.h"
+
 
 #define SAIL_TASK_PERIOD_MS 50
 #define SAIL_DEAD_BAND_DEG 20.0f

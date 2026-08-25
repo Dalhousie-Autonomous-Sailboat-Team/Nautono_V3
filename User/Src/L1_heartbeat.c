@@ -5,7 +5,6 @@
  */
 
 /* Module Header */
-#include "heartbeat.h"
 
 /* System Includes */
 #include "main.h"

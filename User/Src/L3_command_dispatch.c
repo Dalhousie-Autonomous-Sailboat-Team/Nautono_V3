@@ -5,7 +5,7 @@
 //  */
 
 // /* Module Header */
-// #include "command_dispatch.h"
+// #include "L3_command_dispatch.h"
 
 // /* System Headers */
 // #include "main.h"
@@ -20,9 +20,9 @@
 
 // /* User Headers */
 // #include "user_main.h"
-// #include "L1/user_uart.h"
-// #include "L1/pwm.h"
-// #include "L2/encoder.h"
+// #include "L1_user_comms.h"
+// #include "L1_pwm.h"
+// #include "L2_encoder.h"
 
 // // static Command_Status_t Get_Angle_Handler(Command_Message_t *command_message);
 // static Command_Status_t Set_PWM_Handler(Command_Message_t *command_message);
