@@ -1,10 +1,6 @@
-/** @file pwm.h
- *
- * @brief PWM timer for servo and motor control processing.
- */
+#ifndef ACTUATORS_H
+#define ACTUATORS_H
 
-#ifndef PWM_H
-#define PWM_H
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -13,6 +9,8 @@
 
 #define MOTOR_DUTY_CYCLE_MIN 0U
 #define MOTOR_DUTY_CYCLE_MAX 3200U
+
+extern const BoatMode_t boat_mode;
 
 typedef enum
 {
@@ -32,9 +30,16 @@ typedef struct
     int16_t drive;
 } PWM_Duty_Cycle_t;
 
+typedef enum
+{
+    MODE_AUTONOMOUS, // Rpi controls sail and rudder. Can be overriden by Xbee commands
+    MODE_MANUAL, // Xbee controls sail and rudder, Rpi is ignored
+    MODE_WIND_FOLLOWING // Windvane controls sail, Rpi is ignored. Can be overriden by Xbee commands
+} BoatMode_t;
+
 void PWM_Init(void);
 void PWM_SetDutyCycle(PWM_Channel_t channel, uint16_t duty_cycle);
 
-#endif /* PWM_H */
+void SailMotorTask(void *argument);
 
-/*** end of file ***/
+#endif /* ACTUATORS_H */

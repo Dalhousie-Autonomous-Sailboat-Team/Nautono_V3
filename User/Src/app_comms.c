@@ -1,11 +1,11 @@
 /**
- * @file serial_parser.c
+ * @file app_comms.c
  *
- * @brief Router code for parsing serial data.
+ * @brief Application communication code for handling serial and JSON data parsing.
  */
 
 /* Module Header */
-#include "L2_serial_parser.h"
+#include "app_comms.h"
 
 /* System Headers */
 #include "main.h"
@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <stddef.h>
 
 /* User Includes */
 #include "L1_user_comms.h"
@@ -26,8 +27,6 @@
 #include "L2_wind.h"
 #include "L2_xbee.h"
 
-extern osMessageQueueId_t uart_rx_queueHandle;
-
 #define BACKSPACE_CHAR '\177'
 #define NULL_CHAR '\0'
 #define CARRIAGE_RETURN_CHAR '\r'
@@ -35,6 +34,13 @@ extern osMessageQueueId_t uart_rx_queueHandle;
 #define PARSE_STORAGE_LEN 32
 #define NMEA_IIMWV "$IIMWV"
 #define NMEA_IIMWV_LEN 6
+
+#define TELEMETRY_PERIOD_MS 1000
+#define TELEMETRY_BUF_LEN 256
+
+extern osMessageQueueId_t uart_rx_queueHandle;
+
+extern osMessageQueueId_t wind_queueHandle;
 
 static bool WindVane_Parse_NMEA_Sentence(const char *sentence, WindSample_t *sample)
 {
@@ -414,4 +420,131 @@ void UARTParserTask(void *argument)
             continue;
         }
     }
+}
+
+void TelemetryTask(void *argument)
+{
+    (void)argument;
+
+    /* Local shadow of latest data — updated whenever a queue delivers */
+    RPiSample_t rpi = {0};
+    EncoderSample_t sail_enc = {0};
+    //EncoderSample_t flap_enc = {0};
+
+    while (true)
+    {
+
+        // get data
+        RPi_GetLatest(&rpi);
+        Encoder_GetLatest(&sail_enc);
+        
+        /* ── 3. Format and transmit ──────────────────────────────── */
+        char buf[TELEMETRY_BUF_LEN];
+        snprintf(buf, sizeof(buf),
+                 "{"
+                 "\"tb\":%d,"
+                 "\"tlat\":%d,"
+                 "\"tlon\":%d,"
+                 "\"tsa\":%d,"
+                 "\"tfa\":%d,"
+                 "\"tra\":%d,"
+                 "\"clat\":%d,"
+                 "\"clon\":%d,"
+                 "\"cb\":%d,"
+                 "\"wa\":%d,"
+                 "\"sa\":%d,"
+                 "}\r\n",
+                 (int)rpi.target_bearing,
+                 (int)rpi.target_lat,
+                 (int)rpi.target_lon,
+                 (int)rpi.target_sail_angle,
+                 (int)rpi.target_flap_angle,
+                 (int)rpi.target_rudder_angle,
+                 (int)rpi.current_lat,
+                 (int)rpi.current_lon,
+                 (int)rpi.current_bearing,
+                 (int)rpi.current_wind_angle,
+                 (int)sail_enc.angle);
+        // UserUART_Transmit(UART_PORT_XBEE, (uint8_t *)buf, strlen(buf));
+        Radio_Print_String(buf);
+        //Debug_Print_String(buf);
+        /* ── 4. Fixed period ─────────────────────────────────────── */
+        osDelay(TELEMETRY_PERIOD_MS);
+    }
+}
+
+void RpiTransmitTask(void *argument)
+{
+    WindSample_t sample = {0};
+
+    while (true)
+    {
+
+        Wind_GetLatest(&sample);
+        snprintf(tx_buf, sizeof(tx_buf),
+                 "{\"SensorInput\":[{\"windAngle\":%d}]}\r\n",
+                 (int)sample.direction);
+
+        RPi_Print_String(tx_buf);
+        osDelay(500);
+
+    }
+}
+
+/* -------------------------------------------------------------------------
+ * StringToFloat
+ * ------------------------------------------------------------------------- */
+float Conversions_StringToFloat(const char *str)
+{
+    if (str == NULL || *str == '\0')
+        return 0.0f;
+
+    char *tmpSign = (str[0] == '-') ? "-" : "";
+    if (str[0] == '-' || str[0] == '+')
+        str++;
+
+    int tmpInt1 = 0;
+    while (*str && *str != '.')
+    {
+        if (*str < '0' || *str > '9') break;
+        tmpInt1 = tmpInt1 * 10 + (*str - '0');
+        str++;
+    }
+
+    int tmpInt2        = 0;
+    int decimal_digits = 0;
+    if (*str == '.')
+    {
+        str++;
+        while (*str && decimal_digits < 4)
+        {
+            if (*str < '0' || *str > '9') break;
+            tmpInt2 = tmpInt2 * 10 + (*str - '0');
+            decimal_digits++;
+            str++;
+        }
+    }
+
+    // Pad tmpInt2 to 4 decimal places to match FloatToString
+    while (decimal_digits < 4)
+    {
+        tmpInt2 *= 10;
+        decimal_digits++;
+    }
+
+    float result = (float)tmpInt1 + ((float)tmpInt2 / 10000.0f);
+
+    return (tmpSign[0] == '-') ? -result : result;
+}
+
+/* -------------------------------------------------------------------------
+ * FloatToString
+ * ------------------------------------------------------------------------- */
+
+void Conversions_FloatToString(float value, char *buf)
+{
+
+    int rounded = (int)(value < 0 ? value - 0.5f : value + 0.5f);
+    sprintf(buf, "%d", rounded);
+    
 }

@@ -1,5 +1,5 @@
-#ifndef CONVERSIONS_H
-#define CONVERSIONS_H
+#ifndef APP_COMMS_H
+#define APP_COMMS_H
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -22,4 +22,9 @@ float Conversions_StringToFloat(const char *str);
  */
 void Conversions_FloatToString(float value, char *buf);
 
-#endif /* CONVERSIONS_H */ /*** end of file ***/
+void TelemetryTask(void *argument);
+
+void RpiTransmitTask(void *argument);
+
+
+#endif /* APP_COMMS_H */

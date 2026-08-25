@@ -1,5 +1,5 @@
-#ifndef APP_TYPES_H
-#define APP_TYPES_H
+#ifndef APP_STATE_H
+#define APP_STATE_H
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -47,4 +47,13 @@ typedef struct
 
 } RPiSample_t;
 
-#endif /* APP_TYPES_H */ /*** end of file ***/
+void Wind_UpdateLatest(const WindSample_t *sample);
+void Wind_GetLatest(WindSample_t *sample);
+
+void Xbee_UpdateLatest(const XbeeCommand_t *cmd);
+void Xbee_GetLatest(XbeeCommand_t *cmd);
+
+void RPi_UpdateLatest(const RPiSample_t *sample);
+void RPi_GetLatest(RPiSample_t *out);
+
+#endif /* APP_STATE_H */ /*** end of file ***/
