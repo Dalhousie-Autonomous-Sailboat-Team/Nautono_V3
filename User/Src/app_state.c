@@ -6,23 +6,22 @@
 #include <stdio.h>
 #include <string.h>
 
-/* =================== WIND VARIABLES =========================*/ */
+/* =================== WIND VARIABLES =========================*/
 
 extern osMutexId_t windMutexHandle;
 static WindSample_t wind_latest = {0};
 
-/* ================== XBEE VARIABLES ==========================*/ */
+/* ================== XBEE VARIABLES ==========================*/
 
 extern osMutexId_t xbeeMutexHandle;
 static XbeeCommand_t xbee_latest = {0};
 
-/* ================== RPI VARIABLES ==========================*/ */
+/* ================== RPI VARIABLES ==========================*/
 extern osMutexId_t rpiMutexHandle;
-static char tx_buf[128];
 static RPiSample_t rpi_latest;
 
 
-/* ========================= WIND STUFF ================================*/ */
+/* ========================= WIND STUFF ================================*/
 
 void Wind_UpdateLatest(const WindSample_t *sample)
 {
@@ -38,7 +37,7 @@ void Wind_GetLatest(WindSample_t *sample)
     osMutexRelease(windMutexHandle);
 }
 
-/* ========================= XBEE STUFF ================================*/ */
+/* ========================= XBEE STUFF ================================*/
 
 void Xbee_UpdateLatest(const XbeeCommand_t *cmd)
 {
@@ -56,7 +55,7 @@ void Xbee_GetLatest(XbeeCommand_t *cmd)
     osMutexRelease(xbeeMutexHandle);
 }
 
-/* ========================= RPI STUFF ================================*/ */
+/* ========================= RPI STUFF ================================*/
 
 void RPi_UpdateLatest(const RPiSample_t *sample)
 {

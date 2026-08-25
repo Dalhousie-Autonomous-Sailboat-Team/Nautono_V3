@@ -5,7 +5,7 @@
  */
 
 /* Module Header */
-#include "L1_user_comms.h"
+#include "board_comms.h"
 
 /* System Headers */
 #include "main.h"
@@ -15,8 +15,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
+
 /* User Includes */
-#include "user_main.h"
+#include "system.h"
 
 /* I2C includes*/
 #include "stm32h5xx_hal.h"

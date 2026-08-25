@@ -44,6 +44,8 @@ void HeartbeatTask(void *argument)
     }
 }
 
+/* ======================== SLEEP STUFF ===========================*/
+
 /**
  * @brief Pre Sleep Processing
  * - This function is called before the system enters sleep mode.
@@ -65,8 +67,6 @@ void PreSleepProcessing(uint32_t ulExpectedIdleTime)
 
     (void)ulExpectedIdleTime;
 }
-
-/* ======================== SLEEP STUFF ===========================*/ */
 
 /**
  * @brief Post Sleep Processing

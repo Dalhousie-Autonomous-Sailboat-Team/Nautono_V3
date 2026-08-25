@@ -1,9 +1,10 @@
 #ifndef ENCODER_H
 #define ENCODER_H
 
+
+
 #include <stdint.h>
 #include <stdbool.h>
-
 
 
 typedef struct
@@ -21,6 +22,7 @@ bool Encoder_SelectMuxChannel(uint8_t channel);
 void Encoder_UpdateLatest(const EncoderSample_t *sample);
 bool Encoder_GetLatest(EncoderSample_t *out);
 void EncoderTask(void *argument);
+
 
 
 #endif /* ENCODER_H */

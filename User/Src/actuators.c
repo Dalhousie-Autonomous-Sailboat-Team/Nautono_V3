@@ -3,14 +3,11 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "L1_user_comms.h"
-#include "L2_motor_control.h"
-#include "L2_pid.h"
-#include "L2_encoder.h"
-#include "L2_wind.h"
-#include "L2_xbee.h"
-#include "L2_rpi.h"
-#include "L3_boat_mode.h"
+#include "board_comms.h"
+#include "actuators.h"
+#include "pid.h"
+#include "encoder.h"
+#include "app_state.h"
 
 /* Module Header */
 #include "system.h"
@@ -36,7 +33,7 @@
 #define SAIL_CENTER_DEG 180.0f // <-- tune this to your physical setup
 #define SAIL_RANGE_DEG 45.0f   // max deflection each side
 
-/* =============== PWM ================*/ */
+/* =============== PWM ================*/
 #define SERVO_PWM_FREQUENCY_HZ 50U
 #define MOTOR_PWM_FREQUENCY_HZ 20000U
 
@@ -48,9 +45,11 @@ osMessageQueueId_t PWM_Queue;
 
 static char buf[128];
 
+extern const BoatMode_t boat_mode;
+
 const BoatMode_t boat_mode = MODE_AUTONOMOUS;       // HARD CODES MODE OF OPERATION FOR NOW!
 
-/* ================================== MOTOR CONTROL STUFF ================================*/ */
+/* ================================== MOTOR CONTROL STUFF ================================*/
 
 static float wrap_error(float error)
 {
@@ -207,7 +206,7 @@ void SailMotorTask(void *argument)
     }
 }
 
-/* ================================== PWM STUFF ================================*/ */
+/* ================================== PWM STUFF ================================*/
 
 /**
  * @brief Initialize PWM module

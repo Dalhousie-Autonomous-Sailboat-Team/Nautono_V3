@@ -19,13 +19,12 @@
 #include <stddef.h>
 
 /* User Includes */
-#include "L1_user_comms.h"
-#include "L3_command_dispatch.h"
-#include "L2_app_types.h"
-#include "L2_conversions.h"
-#include "L2_rpi.h"
-#include "L2_wind.h"
-#include "L2_xbee.h"
+#include "board_comms.h"
+#include "command_dispatch.h"
+#include "app_state.h"
+#include "app_comms.h"
+#include "encoder.h"
+
 
 #define BACKSPACE_CHAR '\177'
 #define NULL_CHAR '\0'
@@ -41,6 +40,8 @@
 extern osMessageQueueId_t uart_rx_queueHandle;
 
 extern osMessageQueueId_t wind_queueHandle;
+
+static char tx_buf[128];
 
 static bool WindVane_Parse_NMEA_Sentence(const char *sentence, WindSample_t *sample)
 {

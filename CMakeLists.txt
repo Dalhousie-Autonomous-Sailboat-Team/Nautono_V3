@@ -45,23 +45,15 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
-    User/Src/user_main.c
+    User/Src/actuators.c
+    User/Src/app_comms.c
+    User/Src/app_state.c
     User/Src/assert.c
-    User/Src/L1_sleep.c
-    User/Src/L1_heartbeat.c
-    User/Src/L1_user_comms.c
-    User/Src/L1_pwm.c
-    User/Src/L2_serial_parser.c
-    User/Src/L3_command_dispatch.c
-    User/Src/L2_conversions.c
-    User/Src/L2_encoder.c
-    User/Src/L3_telemetry.c
-    User/Src/L2_pid.c
-    User/Src/L2_rpi.c
-    User/Src/L2_motor_control.c
-    User/Src/L3_boat_mode.c
-    User/Src/L2_wind.c
-    User/Src/L2_xbee.c
+    User/Src/board_comms.c
+    User/Src/command_dispatch.c
+    User/Src/encoder.c
+    User/Src/pid.c
+    User/Src/system.c
 )
 
 # Add include paths

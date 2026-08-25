@@ -1,4 +1,4 @@
-#include "L2_pid.h"
+#include "pid.h"
 
 /* Clamp helper */
 static float Clamp(float value, float min, float max)

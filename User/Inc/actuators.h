@@ -10,8 +10,6 @@
 #define MOTOR_DUTY_CYCLE_MIN 0U
 #define MOTOR_DUTY_CYCLE_MAX 3200U
 
-extern const BoatMode_t boat_mode;
-
 typedef enum
 {
     PWM_CHANNEL_RUDDER_SERVO,

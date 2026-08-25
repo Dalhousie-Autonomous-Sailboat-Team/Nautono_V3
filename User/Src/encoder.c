@@ -1,5 +1,10 @@
-#include "L2_encoder.h"
-#include "L1_user_comms.h"
+/* Module Header */
+#include "encoder.h"
+
+/* User Includes */
+#include "board_comms.h"
+
+/* Standard Includes */
 #include <stdio.h>
 
 /* AS5600 constants */
