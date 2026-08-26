@@ -632,4 +632,4 @@ rtos.0.tasks.2=allocationType,Dynamic;bufferName,NULL;codeGen,As external;contro
 rtos.0.tasks.3=allocationType,Dynamic;bufferName,NULL;codeGen,As external;controlBlockName,NULL;entry,EncoderTask;name,encoderTask;parameter,NULL;priority,osPriorityNormal;stackSize,256
 rtos.0.tasks.4=allocationType,Dynamic;bufferName,NULL;codeGen,As external;controlBlockName,NULL;entry,TelemetryTask;name,telemetryTask;parameter,NULL;priority,osPriorityNormal;stackSize,512
 rtos.0.tasks.5=allocationType,Dynamic;bufferName,NULL;codeGen,As external;controlBlockName,NULL;entry,RpiTransmitTask;name,rpiTransmitTask;parameter,NULL;priority,osPriorityNormal;stackSize,128
-rtos.0.tasks.6=allocationType,Dynamic;bufferName,NULL;codeGen,As external;controlBlockName,NULL;entry,SailMotorTask;name,sailMotorTask;parameter,NULL;priority,osPriorityNormal;stackSize,512
+rtos.0.tasks.6=allocationType,Dynamic;bufferName,NULL;codeGen,As external;controlBlockName,NULL;entry,BoatControlTask;name,sailMotorTask;parameter,NULL;priority,osPriorityNormal;stackSize,512

@@ -4,7 +4,7 @@
  */
 
 /* Module Headers */
-#include "system.h"
+#include "system_tasks.h"
 
 /* System Headers */
 #include "main.h"
@@ -15,7 +15,7 @@
 #include <stdbool.h>
 
 /* User Headers */
-#include "actuators.h"
+#include "boat_control.h"
 
 #define HEARTBEAT_PERIOD_MS 2000 /* Total period for one heartbeat cycle in milliseconds */
 #define HEARTBEAT_ON_TIME_MS 1   /* Duration for which the LED stays ON in milliseconds */

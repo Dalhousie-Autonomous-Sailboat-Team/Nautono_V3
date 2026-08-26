@@ -3,14 +3,14 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "board_comms.h"
-#include "actuators.h"
+#include "board_io.h"
+#include "boat_control.h"
 #include "pid.h"
 #include "encoder.h"
 #include "app_state.h"
 
 /* Module Header */
-#include "system.h"
+#include "system_tasks.h"
 
 
 /* System Headers */
@@ -74,7 +74,7 @@ static float sail_command_to_encoder_deg(float sail_angle)
     return deg;
 }
 
-void SailMotorTask(void *argument)
+void BoatControlTask(void *argument)
 {
     (void)argument;
 
@@ -112,20 +112,20 @@ void SailMotorTask(void *argument)
 
             if (xbee_valid)
             {
-                Debug_Print_String("Valid Xbee found\r\n");
+                Debug_Print("Valid Xbee found\r\n");
             }
             else
             {
-                Debug_Print_String("Valid Xbee not found\r\n");
+                Debug_Print("Valid Xbee not found\r\n");
             }
 
             if (rpi_valid)
             {
-                Debug_Print_String("Valid RPi found\r\n");
+                Debug_Print("Valid RPi found\r\n");
             }
             else
             {
-                Debug_Print_String("Valid RPi not found\r\n");
+                Debug_Print("Valid RPi not found\r\n");
             }
 
         }
@@ -171,7 +171,7 @@ void SailMotorTask(void *argument)
             snprintf(buf, sizeof(buf), "wind=%d, rpi_sail=%d, rpi_rudder=%d, xbee_sail=%d, xbee_rudder=%d, enc=%d\r\n",
                     (int)wind.direction, (int)rpi.target_sail_angle, (int)rpi.target_rudder_angle,
                     (int)xbee.sail_angle, (int)xbee.rud_angle, (int)enc.angle);
-            Debug_Print_String(buf);
+            Debug_Print(buf);
         }
 
         // Convert command degrees (-45..+45) to encoder space (0..360)

@@ -19,7 +19,7 @@
 #include <stddef.h>
 
 /* User Includes */
-#include "board_comms.h"
+#include "board_io.h"
 #include "command_dispatch.h"
 #include "app_state.h"
 #include "app_comms.h"
@@ -63,7 +63,7 @@ static bool WindVane_Parse_NMEA_Sentence(const char *sentence, WindSample_t *sam
     token = strtok_r(NULL, ",", &saveptr);
     if (token == NULL || *token == '\0')
         return false;
-    sample->direction = Conversions_StringToFloat(token);
+    sample->direction = StringToFloat(token);
 
     // Field 2: Reference
     token = strtok_r(NULL, ",", &saveptr);
@@ -75,7 +75,7 @@ static bool WindVane_Parse_NMEA_Sentence(const char *sentence, WindSample_t *sam
     token = strtok_r(NULL, ",", &saveptr);
     if (token == NULL || *token == '\0')
         return false;
-    sample->speed = Conversions_StringToFloat(token);
+    sample->speed = StringToFloat(token);
 
     // Field 4: Speed unit
     token = strtok_r(NULL, ",", &saveptr);
@@ -146,13 +146,13 @@ static bool XBee_Parse_JSON(const char *packet, XbeeCommand_t *cmd)
     const char *sa_val = JSON_FindValue(packet, "sa:");
     if (sa_val == NULL)
         return false;
-    cmd->sail_angle = Conversions_StringToFloat(sa_val);
+    cmd->sail_angle = StringToFloat(sa_val);
 
     // Extract rud_angle
     const char *ra_val = JSON_FindValue(packet, "ra:");
     if (ra_val == NULL)
         return false;
-    cmd->rud_angle = Conversions_StringToFloat(ra_val);
+    cmd->rud_angle = StringToFloat(ra_val);
 
     return true;
 }
@@ -178,53 +178,53 @@ static bool RPi_Parse_JSON(const char *packet, RPiSample_t *rpi)
     val = JSON_FindValue(obj, "targetBearing\":");
     if (val == NULL)
         return false;
-    rpi->target_bearing = Conversions_StringToFloat(val);
+    rpi->target_bearing = StringToFloat(val);
 
     val = JSON_FindValue(obj, "waypointLat\":");
     if (val == NULL)
         return false;
-    rpi->target_lat = Conversions_StringToFloat(val);
+    rpi->target_lat = StringToFloat(val);
 
     val = JSON_FindValue(obj, "waypointLon\":");
     if (val == NULL)
         return false;
-    rpi->target_lon = Conversions_StringToFloat(val);
+    rpi->target_lon = StringToFloat(val);
 
     val = JSON_FindValue(obj, "targetSailAngle\":");
     if (val == NULL)
         return false;
-    rpi->target_sail_angle = Conversions_StringToFloat(val);
+    rpi->target_sail_angle = StringToFloat(val);
 
     val = JSON_FindValue(obj, "targetFlapAngle\":");
     if (val == NULL)
         return false;
-    rpi->target_flap_angle = Conversions_StringToFloat(val);
+    rpi->target_flap_angle = StringToFloat(val);
 
     val = JSON_FindValue(obj, "targetRudderAngle\":");
     if (val == NULL)
         return false;
-    rpi->target_rudder_angle = Conversions_StringToFloat(val);
+    rpi->target_rudder_angle = StringToFloat(val);
 
     /* Navigation state */
     val = JSON_FindValue(obj, "latitude\":");
     if (val == NULL)
         return false;
-    rpi->current_lat = Conversions_StringToFloat(val);
+    rpi->current_lat = StringToFloat(val);
 
     val = JSON_FindValue(obj, "longitude\":");
     if (val == NULL)
         return false;
-    rpi->current_lon = Conversions_StringToFloat(val);
+    rpi->current_lon = StringToFloat(val);
 
     val = JSON_FindValue(obj, "headingAngle\":");
     if (val == NULL)
         return false;
-    rpi->current_bearing = Conversions_StringToFloat(val);
+    rpi->current_bearing = StringToFloat(val);
 
     val = JSON_FindValue(obj, "windAngle\":");
     if (val == NULL)
         return false;
-    rpi->current_wind_angle = Conversions_StringToFloat(val);
+    rpi->current_wind_angle = StringToFloat(val);
 
     return true;
 }
@@ -282,7 +282,7 @@ static void ProcessWindvaneData(uint8_t data)
             {
                 // osMessageQueuePut(wind_queueHandle, &sample, 0, 0);
                 Wind_UpdateLatest(&sample);
-                // Debug_Print_String("Parsed windvane data\r\n");
+                // Debug_Print("Parsed windvane data\r\n");
             }
         }
 
@@ -293,15 +293,15 @@ static void ProcessWindvaneData(uint8_t data)
 static void ProcessXbeeData(uint8_t data)
 {
     /* Future implementation for UART8 data from Xbee */
-    // Debug_Print_String("Received data from Xbee\r\n");
+    // Debug_Print("Received data from Xbee\r\n");
 
     static char xbee_packet[64];
     static uint8_t index = 0;
     static bool collecting = false;
 
-    // Debug_Print_String("Received data from Xbee\r\n");
+    // Debug_Print("Received data from Xbee\r\n");
     // snprintf(xbee_packet, sizeof(xbee_packet), "Received char: %c\r\n", data);
-    // Debug_Print_String((char[]){(char)data, '\0'});
+    // Debug_Print((char[]){(char)data, '\0'});
 
     // Start collecting on '{'
     if (data == '{')
@@ -334,7 +334,7 @@ static void ProcessXbeeData(uint8_t data)
         if (XBee_Parse_JSON(xbee_packet, &cmd))
         {
             Xbee_UpdateLatest(&cmd);
-            // Debug_Print_String("Parsed Xbee command\r\n");
+            // Debug_Print("Parsed Xbee command\r\n");
         }
     }
 }
@@ -346,7 +346,7 @@ static void ProcessRaspberryData(uint8_t data)
     static bool collecting = false;
     static uint8_t brace_depth = 0;
 
-    // Debug_Print_String((char[]){(char) data, '\0'});
+    // Debug_Print((char[]){(char) data, '\0'});
 
     if (data == '{' && !collecting)
     {
@@ -380,12 +380,12 @@ static void ProcessRaspberryData(uint8_t data)
         index = 0;
 
         RPiSample_t RPi_sample;
-        Debug_Print_String("Got full string\r\n");
+        Debug_Print("Got full string\r\n");
 
         if (RPi_Parse_JSON(rpi_packet, &RPi_sample))
         {
             RPi_UpdateLatest(&RPi_sample);
-            Debug_Print_String("RPi data parsed and stored\r\n");
+            Debug_Print("RPi data parsed and stored\r\n");
         }
     }
 }
@@ -394,7 +394,7 @@ void UARTParserTask(void *argument)
 
 {
     UART_Char_t uart_char;
-    User_UART_Init();
+    BoardUART_Init();
     while (true)
     {
         osMessageQueueGet(uart_rx_queueHandle, &uart_char, NULL, osWaitForever);
@@ -467,8 +467,8 @@ void TelemetryTask(void *argument)
                  (int)rpi.current_wind_angle,
                  (int)sail_enc.angle);
         // UserUART_Transmit(UART_PORT_XBEE, (uint8_t *)buf, strlen(buf));
-        Radio_Print_String(buf);
-        //Debug_Print_String(buf);
+        Radio_Send(buf);
+        //Debug_Print(buf);
         /* ── 4. Fixed period ─────────────────────────────────────── */
         osDelay(TELEMETRY_PERIOD_MS);
     }
@@ -486,7 +486,7 @@ void RpiTransmitTask(void *argument)
                  "{\"SensorInput\":[{\"windAngle\":%d}]}\r\n",
                  (int)sample.direction);
 
-        RPi_Print_String(tx_buf);
+        RPi_Send(tx_buf);
         osDelay(500);
 
     }
@@ -495,7 +495,7 @@ void RpiTransmitTask(void *argument)
 /* -------------------------------------------------------------------------
  * StringToFloat
  * ------------------------------------------------------------------------- */
-float Conversions_StringToFloat(const char *str)
+float StringToFloat(const char *str)
 {
     if (str == NULL || *str == '\0')
         return 0.0f;
@@ -542,7 +542,7 @@ float Conversions_StringToFloat(const char *str)
  * FloatToString
  * ------------------------------------------------------------------------- */
 
-void Conversions_FloatToString(float value, char *buf)
+void FloatToString(float value, char *buf)
 {
 
     int rounded = (int)(value < 0 ? value - 0.5f : value + 0.5f);

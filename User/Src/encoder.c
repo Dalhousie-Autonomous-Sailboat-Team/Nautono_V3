@@ -2,7 +2,7 @@
 #include "encoder.h"
 
 /* User Includes */
-#include "board_comms.h"
+#include "board_io.h"
 
 /* Standard Includes */
 #include <stdio.h>
@@ -33,12 +33,12 @@ static bool AS5600_ReadAngle(uint16_t *angle_degrees)
 
     // address slave and register
     uint8_t reg = AS5600_REG_ANGLE_HIGH;
-    if (!UserI2C_Write(AS5600_I2C_ADDRESS, &reg, 1, AS5600_I2C_TIMEOUT_MS))
+    if (!BoardI2C_Write(AS5600_I2C_ADDRESS, &reg, 1, AS5600_I2C_TIMEOUT_MS))
         return false;
 
     // read 2 bytes
     uint8_t rx_buf[2] = {0};
-    if (!UserI2C_Read(AS5600_I2C_ADDRESS, rx_buf, 2, AS5600_I2C_TIMEOUT_MS))
+    if (!BoardI2C_Read(AS5600_I2C_ADDRESS, rx_buf, 2, AS5600_I2C_TIMEOUT_MS))
         return false;
 
     // bit manipulation
@@ -64,7 +64,7 @@ bool Encoder_SelectMuxChannel(uint8_t channel)
         reg = (uint8_t)(1U << channel);   /* channel 4 → 0b00010000 = 0x10 */
     }
 
-    return UserI2C_Write(TCA9548A_I2C_ADDRESS, &reg, 1, MUX_TIMEOUT_MS);
+    return BoardI2C_Write(TCA9548A_I2C_ADDRESS, &reg, 1, MUX_TIMEOUT_MS);
 }
 
 void Encoder_UpdateLatest(const EncoderSample_t *sample)
@@ -113,8 +113,8 @@ void EncoderTask(void *argument)
         /* update struct via Mutex */
         Encoder_UpdateLatest(&sample);
         // snprintf(buf, sizeof(buf), "Encoder angle: %d degrees\r\n", (int)sample.angle);
-        // Debug_Print_String(buf);
-        //Debug_Print_String("Encoder angle: %d degrees\r\n", (int)sample.angle);
+        // Debug_Print(buf);
+        //Debug_Print("Encoder angle: %d degrees\r\n", (int)sample.angle);
     
         //DebugPrint("Encoder angle: %.u degrees\r\n", sample.angle);
     

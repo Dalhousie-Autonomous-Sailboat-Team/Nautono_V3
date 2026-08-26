@@ -13,7 +13,7 @@
 #include "cmsis_gcc.h"
 #include "FreeRTOS.h"
 
-#include "assert.h"
+#include "fw_assert.h"
 
 /* The maximum length of the message that the assert caller may store: */
 #define LAST_MSG_LEN 64

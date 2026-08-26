@@ -1,11 +1,11 @@
 /**
- * @file user_comms.c
+ * @file board_io.c
  *
  * @brief Driver code for interfacing with UART AND I2C peripherals.
  */
 
 /* Module Header */
-#include "board_comms.h"
+#include "board_io.h"
 
 /* System Headers */
 #include "main.h"
@@ -17,7 +17,7 @@
 #include <string.h>
 
 /* User Includes */
-#include "system.h"
+#include "system_tasks.h"
 
 /* I2C includes*/
 #include "stm32h5xx_hal.h"
@@ -67,9 +67,9 @@ UART_HandleTypeDef *uart_handle_lookup[] = {
 /* ============================================== I2C =======================================================*/
 
 /* -------------------------------------------------------------------------
- * UserI2C_Write
+ * BoardI2C_Write
  * ------------------------------------------------------------------------- */
-bool UserI2C_Write(uint16_t address, uint8_t *data, uint16_t length, uint32_t timeout)
+bool BoardI2C_Write(uint16_t address, uint8_t *data, uint16_t length, uint32_t timeout)
 {
     /* Kick off interrupt driven transmit */
     HAL_StatusTypeDef status = HAL_I2C_Master_Transmit_IT(&hi2c2, address, data, length);
@@ -84,9 +84,9 @@ bool UserI2C_Write(uint16_t address, uint8_t *data, uint16_t length, uint32_t ti
 }
 
 /* -------------------------------------------------------------------------
- * UserI2C_Read
+ * BoardI2C_Read
  * ------------------------------------------------------------------------- */
-bool UserI2C_Read(uint16_t address, uint8_t *buffer, uint16_t length, uint32_t timeout)
+bool BoardI2C_Read(uint16_t address, uint8_t *buffer, uint16_t length, uint32_t timeout)
 {
     /* Kick off interrupt driven receive */
     HAL_StatusTypeDef status = HAL_I2C_Master_Receive_IT(&hi2c2, address, buffer, length);
@@ -126,7 +126,7 @@ void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
 /**
  * @brief Initializes UART peripherals for interrupt-driven reception.
  */
-void User_UART_Init(void)
+void BoardUART_Init(void)
 {
     /* Start Interrupt Character Reception for all UART ports */
 
@@ -165,14 +165,14 @@ static void Print_String_Local(const char *string, UART_Port_t port)
  * @brief Thread-safe function to print a string to the debug UART port.
  * @param string
  */
-void Debug_Print_String(const char *string)
+void Debug_Print(const char *string)
 {
     osMutexAcquire(debugPrintStringMutexHandle, osWaitForever);
     Print_String_Local(string, DEBUG_PORT);
     osMutexRelease(debugPrintStringMutexHandle);
 }
 
-bool RPi_Print_String(const char *string)
+bool RPi_Send(const char *string)
 {
     if (string == NULL)
         return false;
@@ -195,7 +195,7 @@ bool RPi_Print_String(const char *string)
     return true;
 }
 
-bool Radio_Print_String(const char *string)
+bool Radio_Send(const char *string)
 {
     if (string == NULL)
         return false;

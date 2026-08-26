@@ -22,10 +22,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "board_comms.h"
+#include "board_io.h"
 #include "app_state.h"
 #include "app_comms.h"
-#include "actuators.h"
+#include "boat_control.h"
 
 /* USER CODE END Includes */
 
@@ -248,7 +248,7 @@ void MX_FREERTOS_Init(void) {
   rpiTransmitTaskHandle = osThreadNew(RpiTransmitTask, NULL, &rpiTransmitTask_attributes);
 
   /* creation of sailMotorTask */
-  sailMotorTaskHandle = osThreadNew(SailMotorTask, NULL, &sailMotorTask_attributes);
+  sailMotorTaskHandle = osThreadNew(BoatControlTask, NULL, &sailMotorTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
     /* add threads, ... */

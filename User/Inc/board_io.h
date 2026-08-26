@@ -3,8 +3,8 @@
  * @brief Driver code for interfacing with UART and I2C peripherals.
  */
 
-#ifndef USER_COMMS_H
-#define USER_COMMS_H
+#ifndef BOARD_IO_H
+#define BOARD_IO_H
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -30,7 +30,7 @@ void UserI2C_Init(void);
  * @return true     If transaction completed successfully
  * @return false    If transaction failed or timed out
  */
-bool UserI2C_Write(uint16_t address, uint8_t *data, uint16_t length, uint32_t timeout);
+bool BoardI2C_Write(uint16_t address, uint8_t *data, uint16_t length, uint32_t timeout);
 
 /**
  * @brief Read bytes from an I2C device
@@ -42,7 +42,7 @@ bool UserI2C_Write(uint16_t address, uint8_t *data, uint16_t length, uint32_t ti
  * @return true     If transaction completed successfully
  * @return false    If transaction failed or timed out
  */
-bool UserI2C_Read(uint16_t address, uint8_t *buffer, uint16_t length, uint32_t timeout);
+bool BoardI2C_Read(uint16_t address, uint8_t *buffer, uint16_t length, uint32_t timeout);
 
 /* UART peripheral code */
 
@@ -64,10 +64,10 @@ typedef struct
     uint8_t data;
 } UART_Char_t;
 
-void User_UART_Init(void);
-void Debug_Print_String(const char *string);
+void BoardUART_Init(void);
+void Debug_Print(const char *string);
 
-bool Radio_Print_String(const char *string);
-bool RPi_Print_String(const char *string);
+bool Radio_Send(const char *string);
+bool RPi_Send(const char *string);
 
-#endif /* USER_I2C_H */
+#endif /* BOARD_IO_H */

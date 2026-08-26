@@ -12,7 +12,7 @@
  * @param str   Null-terminated input string e.g. "226.0", "-12.5"
  * @return float Parsed value
  */
-float Conversions_StringToFloat(const char *str);
+float StringToFloat(const char *str);
 
 /**
  * @brief Convert a float to a string
@@ -20,7 +20,7 @@ float Conversions_StringToFloat(const char *str);
  * Does not use sprintf/printf.
  *
  */
-void Conversions_FloatToString(float value, char *buf);
+void FloatToString(float value, char *buf);
 
 void TelemetryTask(void *argument);
 

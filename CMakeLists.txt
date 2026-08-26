@@ -45,15 +45,15 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
-    User/Src/actuators.c
+    User/Src/boat_control.c
     User/Src/app_comms.c
     User/Src/app_state.c
-    User/Src/assert.c
-    User/Src/board_comms.c
+    User/Src/fw_assert.c
+    User/Src/board_io.c
     User/Src/command_dispatch.c
     User/Src/encoder.c
     User/Src/pid.c
-    User/Src/system.c
+    User/Src/system_tasks.c
 )
 
 # Add include paths

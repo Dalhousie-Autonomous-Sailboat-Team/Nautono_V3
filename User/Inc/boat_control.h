@@ -1,5 +1,5 @@
-#ifndef ACTUATORS_H
-#define ACTUATORS_H
+#ifndef boat_control_H
+#define boat_control_H
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -38,6 +38,6 @@ typedef enum
 void PWM_Init(void);
 void PWM_SetDutyCycle(PWM_Channel_t channel, uint16_t duty_cycle);
 
-void SailMotorTask(void *argument);
+void BoatControlTask(void *argument);
 
-#endif /* ACTUATORS_H */
+#endif /* boat_control_H */

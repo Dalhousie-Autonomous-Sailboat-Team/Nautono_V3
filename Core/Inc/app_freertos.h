@@ -82,7 +82,7 @@ extern void HeartbeatTask(void *argument);
 extern void EncoderTask(void *argument);
 extern void TelemetryTask(void *argument);
 extern void RpiTransmitTask(void *argument);
-extern void SailMotorTask(void *argument);
+extern void BoatControlTask(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 

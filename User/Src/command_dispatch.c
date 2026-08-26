@@ -62,7 +62,7 @@
 //     }
 //     char response[64];
 //     snprintf(response, sizeof(response), "Unknown command >%s<\n", command_message->command);
-//     Debug_Print_String(response);
+//     Debug_Print(response);
 //     return COMMAND_STATUS_UNKNOWN_COMMAND;
 // }
 
@@ -71,7 +71,7 @@
 //     char response[64];
 //     if (command_message->arg_count != 1)
 //     {
-//         Debug_Print_String("Invalid arg count\n");
+//         Debug_Print("Invalid arg count\n");
 //         return COMMAND_STATUS_INVALID_ARGUMENT;
 //     }
 //     if (strcmp(command_message->arguments[0], "mast") == 0)
@@ -79,12 +79,12 @@
 //         EncoderSample_t sample;
 //         Encoder_GetLatest(&sample);
 //         snprintf(response, sizeof(response), "MAST_ANGLE:%u\n", (uint16_t)sample.angle);
-//         Debug_Print_String(response);
+//         Debug_Print(response);
 //     }
 //     else
 //     {
 //         snprintf(response, sizeof(response), "Unknown argument >%s<\n", command_message->arguments[0]);
-//         Debug_Print_String(response);
+//         Debug_Print(response);
 //         return COMMAND_STATUS_INVALID_ARGUMENT;
 //     }
 //     return COMMAND_STATUS_SUCCESS;
@@ -95,7 +95,7 @@
 //     char response[64];
 //     if (command_message->arg_count != 2)
 //     {
-//         Debug_Print_String("Invalid arg count\n");
+//         Debug_Print("Invalid arg count\n");
 //         return COMMAND_STATUS_INVALID_ARGUMENT;
 //     }
 
@@ -135,7 +135,7 @@
 //     else
 //     {
 //         snprintf(response, sizeof(response), "Unknown channel >%s<\n", command_message->arguments[0]);
-//         Debug_Print_String(response);
+//         Debug_Print(response);
 //         return COMMAND_STATUS_INVALID_ARGUMENT;
 //     }
 
@@ -145,7 +145,7 @@
 
 //     if (*end != '\0')
 //     {
-//         Debug_Print_String("Invalid duty cycle\n");
+//         Debug_Print("Invalid duty cycle\n");
 //         return COMMAND_STATUS_INVALID_ARGUMENT;
 //     }
 
