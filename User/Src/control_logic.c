@@ -104,22 +104,31 @@ void ControlLogic_Evaluate(const ControlLogicInput_t *input, ControlLogicOutput_
         result.target_rudder_angle = 0.0f;
     }
 
-    float target_encoder_angle = sail_command_to_encoder_deg(result.target_sail_angle);
-    float sail_error = wrap_error(target_encoder_angle - input->encoder.angle);
+    if (result.xbee_valid || result.rpi_valid)
+    {
+        float target_encoder_angle = sail_command_to_encoder_deg(result.target_sail_angle);
+        float sail_error = wrap_error(target_encoder_angle - input->encoder.angle);
 
-    /* Bang-bang sail control: drive at full duty outside the dead band. */
-    if (sail_error > SAIL_DEAD_BAND_DEG)
-    {
-        result.sail_motor_channel_1_pwm = MOTOR_FULL;
-        result.sail_motor_channel_2_pwm = MOTOR_OFF;
-    }
-    else if (sail_error < -SAIL_DEAD_BAND_DEG)
-    {
-        result.sail_motor_channel_1_pwm = MOTOR_OFF;
-        result.sail_motor_channel_2_pwm = MOTOR_FULL;
+        /* Bang-bang sail control: drive at full duty outside the dead band. */
+        if (sail_error > SAIL_DEAD_BAND_DEG)
+        {
+            result.sail_motor_channel_1_pwm = MOTOR_FULL;
+            result.sail_motor_channel_2_pwm = MOTOR_OFF;
+        }
+        else if (sail_error < -SAIL_DEAD_BAND_DEG)
+        {
+            result.sail_motor_channel_1_pwm = MOTOR_OFF;
+            result.sail_motor_channel_2_pwm = MOTOR_FULL;
+        }
+        else
+        {
+            result.sail_motor_channel_1_pwm = MOTOR_OFF;
+            result.sail_motor_channel_2_pwm = MOTOR_OFF;
+        }
     }
     else
     {
+        /* No fresh command means no sail movement, regardless of encoder position. */
         result.sail_motor_channel_1_pwm = MOTOR_OFF;
         result.sail_motor_channel_2_pwm = MOTOR_OFF;
     }
