@@ -12,6 +12,15 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON)
 
+option(WINDBOUND_BUILD_HOST_TESTS "Build host-native unit tests instead of firmware" OFF)
+
+if(WINDBOUND_BUILD_HOST_TESTS)
+    project(WindboundHostTests LANGUAGES C)
+    include(CTest)
+    add_subdirectory(tests)
+    return()
+endif()
+
 
 # Define the build type
 if(NOT CMAKE_BUILD_TYPE)
@@ -48,6 +57,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     User/Src/boat_control.c
     User/Src/control_logic.c
     User/Src/app_comms.c
+    User/Src/app_protocol.c
     User/Src/app_state.c
     User/Src/fw_assert.c
     User/Src/board_io.c

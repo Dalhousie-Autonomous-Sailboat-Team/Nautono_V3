@@ -1,0 +1,4 @@
+#ifndef TEST_FAKE_FREERTOS_H
+#define TEST_FAKE_FREERTOS_H
+
+#endif /* TEST_FAKE_FREERTOS_H */

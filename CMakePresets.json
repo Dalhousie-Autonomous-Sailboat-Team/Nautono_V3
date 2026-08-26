@@ -23,6 +23,14 @@
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"
             }
+        },
+        {
+            "name": "Host-Tests",
+            "displayName": "Host-native tests",
+            "binaryDir": "${sourceDir}/build/Host-Tests",
+            "cacheVariables": {
+                "WINDBOUND_BUILD_HOST_TESTS": "ON"
+            }
         }
     ],
     "buildPresets": [
@@ -33,6 +41,21 @@
         {
             "name": "Release",
             "configurePreset": "Release"
+        },
+        {
+            "name": "Host-Tests",
+            "configurePreset": "Host-Tests",
+            "configuration": "Debug"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "Host-Tests",
+            "configurePreset": "Host-Tests",
+            "configuration": "Debug",
+            "output": {
+                "outputOnFailure": true
+            }
         }
     ]
 }

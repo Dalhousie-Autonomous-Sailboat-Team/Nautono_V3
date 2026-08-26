@@ -1,10 +1,6 @@
 #include "app_state.h"
-#include "board_io.h"
 
 #include "cmsis_os.h"
-
-#include <stdio.h>
-#include <string.h>
 
 /* =================== WIND VARIABLES =========================*/
 
