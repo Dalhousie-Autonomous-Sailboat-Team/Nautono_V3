@@ -46,6 +46,7 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     User/Src/boat_control.c
+    User/Src/control_logic.c
     User/Src/app_comms.c
     User/Src/app_state.c
     User/Src/fw_assert.c
